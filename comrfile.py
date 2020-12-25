@@ -36,6 +36,8 @@ compressed_data = zlib.compress(str, 2)
 
 print("comppresed size:", sys.getsizeof(compressed_data))
 
+os.chdir(root_path)
+
 createfile = open('compressed.txt', 'w')
 createfile.close()
 savecomp = open('compressed.txt', 'wb')
@@ -43,5 +45,6 @@ compressed_data.encode("utf8", "ascii")
 savecomp.write(compressed_data)
 savecomp.close()
 
+os.sleep(10)
 
-os.system('python header.py')
+#os.system('python header.py')
