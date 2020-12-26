@@ -42,12 +42,14 @@ time.sleep(10)
 print("compressed size:", sys.getsizeof(str))
 
 decompressed_data = zlib.decompress(str)
+#zobj = zlib.decompressobj(str)  # obj for decompressing data streams that won’t fit into memory at once.
 
 print("decomppresed size:", sys.getsizeof(decompressed_data))
 
 os.chdir(root_path)
 os.chdir(output_path)
 
+#print(decompressed_data)
 
 print("do you want to rename the compressed file?")
 
@@ -72,5 +74,6 @@ if (file_rename == "no"):
     savecomp.write(decompressed_data)
     savecomp.close()
 
+print("decompression successful app wil close in 10 sec")
 
 time.sleep(10)

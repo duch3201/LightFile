@@ -43,10 +43,10 @@ print("comppresed size:", sys.getsizeof(compressed_data))
 
 createfile = open('compressed.lfc', 'w')
 createfile.close()
-savecomp = open('compressed.', 'wb')
+savecomp = open('compressed.lfc', 'wb')
 #compressed_data.encode("utf8", "ascii")
 savecomp.write(compressed_data)
 savecomp.close()
 
-print("this application will close after 10 seconds")
+print("compression successful app will close in 10 sec")
 time.sleep(10)
