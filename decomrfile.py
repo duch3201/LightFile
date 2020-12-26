@@ -9,8 +9,9 @@ import os
 root_path = '/'
 
 file_name = input("please enter a file name:\n")
-path = input("enter a path to the file: ")
+path = input("enter a path to the compressed file: ")
 
+File_rename = "no"
 os.chdir(root_path)
 try:
     os.chdir(path)
@@ -32,19 +33,32 @@ except FileNotFoundError:
 
 #print(str)
 
-print("raw size:", sys.getsizeof(str))
+print("compressed size:", sys.getsizeof(str))
 
 decompressed_data = zlib.decompress(str, 2)
 
-print("comppresed size:", sys.getsizeof(compressed_data))
+print("decomppresed size:", sys.getsizeof(decompressed_data))
 
 os.chdir(root_path)
 
-createfile = open('compressed.txt', 'w')
-createfile.close()
-savecomp = open('compressed.txt', 'wb')
-compressed_data.encode("utf8", "ascii")
-savecomp.write(compressed_data)
-savecomp.close()
+Print("do you want to rename the compressed file?")
+
+File_rename = input(": ")
+
+    If (file_rename == "yes"):
+      Creaternfile = open(file_rename, 'w')
+      Creaternfile.close()
+      Savecomp = open('decompressed
+
+
+
+    If (file_rename == "no")
+
+      createfile = open('decompressed.txt', 'w')
+      createfile.close()
+      savecomp = open('compressed.txt', 'wb')
+      #compressed_data.encode("utf8", "ascii")
+      savecomp.write(compressed_data)
+      savecomp.close()
 
 os.sleep(10)
