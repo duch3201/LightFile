@@ -8,6 +8,8 @@ root_path = '/'
 
 file_name = input("please enter a file name:\n")
 path = input("enter a path to the file: ")
+print("where do you want to put the compressed file")
+output_path = input (":  ")
 
 os.chdir(root_path)
 try:
@@ -22,7 +24,7 @@ except PermissionError:
 
 #os.chdir(path)
 
-str = open('file_name', 'br')
+#str = open('file_name', 'br')
 try:
     str = open(file_name, 'rb').read()
 except FileNotFoundError:
@@ -32,19 +34,19 @@ except FileNotFoundError:
 
 print("raw size:", sys.getsizeof(str))
 
-compressed_data = zlib.compress(str, 2)
+compressed_data = zlib.compress(str, 5)
+
+os.chdir(root_path)
+os.chdir(output_path)
 
 print("comppresed size:", sys.getsizeof(compressed_data))
 
-os.chdir(root_path)
-
-createfile = open('compressed.txt', 'w')
+createfile = open('compressed.lfc', 'w')
 createfile.close()
-savecomp = open('compressed.txt', 'wb')
-compressed_data.encode("utf8", "ascii")
+savecomp = open('compressed.', 'wb')
+#compressed_data.encode("utf8", "ascii")
 savecomp.write(compressed_data)
 savecomp.close()
 
-os.sleep(10)
-
-#os.system('python header.py')
+print("this application will close after 10 seconds")
+time.sleep(10)
