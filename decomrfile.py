@@ -10,7 +10,7 @@ root_path = '/'
 
 file_name = input("please enter a file name:\n")
 path = input("enter a path to the compressed file: ")
-print("where do you want to put the compressed file")
+print("where do you want to put the decompressed file")
 output_path = input (":  ")
 
 File_rename = "no"
@@ -56,9 +56,12 @@ print("do you want to rename the compressed file?")
 file_rename = input(": ")
 
 if (file_rename == "yes"):
-    creaternfile = open(file_rename, 'w')
+    print("enter new file name ")
+    file_newname = input("here: ")
+
+    creaternfile = open(file_newname, 'w')
     creaternfile.close()
-    savedecomp = open(file_rename, 'wb')
+    savedecomp = open(file_newname, 'wb')
     savedecomp.write(decompressed_data)
     savedecomp.close()
 #Savecomp = open('decompressed
@@ -74,6 +77,7 @@ if (file_rename == "no"):
     savecomp.write(decompressed_data)
     savecomp.close()
 
-print("decompression successful app wil close in 10 sec")
+print("decompression successful! app wil close in 10 sec")
+print ("please change the file extension to the original one (we don't support that yet)")
 
 time.sleep(10)

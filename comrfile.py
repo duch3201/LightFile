@@ -29,12 +29,11 @@ try:
     str = open(file_name, 'rb').read()
 except FileNotFoundError:
   print("This file does not exist!")
-
 #print(str)
 
 print("raw size:", sys.getsizeof(str))
 
-compressed_data = zlib.compress(str, 5)
+compressed_data = zlib.compress(str, 1)
 
 os.chdir(root_path)
 os.chdir(output_path)
