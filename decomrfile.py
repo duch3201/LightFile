@@ -8,10 +8,14 @@ import os
  
 root_path = '/'
 
-file_name = input("please enter a file name:\n")
-path = input("enter a path to the compressed file: ")
+print("please enter a file name")
+file_name = input(": ")
+
+print("enter a path to file")
+path = input(": ")
+
 print("where do you want to put the decompressed file")
-output_path = input (":  ")
+output_path = input (": ")
 
 File_rename = "no"
 os.chdir(root_path)
@@ -25,7 +29,6 @@ except PermissionError:
     print("You do not have permissions to change to {0}".format(path))
 
 str = open(file_name, 'rb').read()
-#os.chdir(path)
 
 #str = open('file_name', 'br')
 try:
@@ -33,11 +36,7 @@ try:
 except FileNotFoundError:
   print("This file does not exist!")
 
-#print(str)
-
-#print(str)
-
-time.sleep(10)
+time_start = time.time()
 
 print("compressed size:", sys.getsizeof(str))
 
@@ -49,14 +48,14 @@ print("decomppresed size:", sys.getsizeof(decompressed_data))
 os.chdir(root_path)
 os.chdir(output_path)
 
-#print(decompressed_data)
 
 print("do you want to rename the compressed file?")
 
 file_rename = input(": ")
 
 if (file_rename == "yes"):
-    print("enter new file name ")
+    print("please enter the whole file name, example [file_name.ext]")
+    print("enter new file name")
     file_newname = input("here: ")
 
     creaternfile = open(file_newname, 'w')
@@ -77,7 +76,10 @@ if (file_rename == "no"):
     savecomp.write(decompressed_data)
     savecomp.close()
 
+time_elapsed = time.time() - time_start
+
+print("decompression only took:", time_elapsed, "sec")
+
 print("decompression successful! app wil close in 10 sec")
-print ("please change the file extension to the original one (we don't support that yet)")
 
 time.sleep(10)
