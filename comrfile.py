@@ -1,6 +1,7 @@
 import zlib
 import sys
 import time
+import base64
 import os
 
 #takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and removes the file name (in this case, C:/Users/JohnDoe/Desktop)
