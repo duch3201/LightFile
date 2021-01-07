@@ -5,19 +5,86 @@ import sys
 import time
 import base64
 import os
- 
+
+#takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and removes the file name (in this case, C:/Users/JohnDoe/Desktop)
+
+def getPath(s):
+
+    #reverse string
+    
+    reversedstr = ""
+
+    for c in reversed(s):
+        reversedstr = reversedstr + c
+
+    #remove the rest of the path, leaving only the file name
+
+    tempfn = ""
+    shouldAdd = False
+    
+    for c in reversedstr:
+        if(shouldAdd == True):
+            tempfn = tempfn + c
+        if(c == '\\' or c == '/'):
+            shouldAdd = True
+        
+        
+
+    #reverse the file name to make it valid again
+
+    filename = ""
+    
+    for c in reversed(tempfn):
+        filename = filename + c
+    
+    
+    return filename
+
+#takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and returns just the file name (in this case, example.txt)
+
+# s = string containing the path
+
+def getFileNameFromPath(s):
+
+    #reverse string
+    
+    reversedstr = ""
+
+    for c in reversed(s):
+        reversedstr = reversedstr + c
+
+    #remove the rest of the path, leaving only the file name
+
+    tempfn = ""
+    
+    for c in reversedstr:
+        if(c == '\\' or c == '/'):
+            break
+        tempfn = tempfn + c
+        
+
+    #reverse the file name to make it valid again
+
+    filename = ""
+    
+    for c in reversed(tempfn):
+        filename = filename + c
+    
+    
+    return filename
+
 root_path = '/'
 
-print("please enter a file name")
-file_name = input(": ")
+print("Selected to decompress.\nEnter the input file")
+path_total = input(": ")
+file_name = getFileNameFromPath(path_total)
 
-print("enter a path to file")
-path = input(": ")
+path = getPath(path_total)
 
-print("where do you want to put the decompressed file")
+print("Enter the path to the output folder")
 output_path = input (": ")
 
-File_rename = "no"
+#File_rename = "no"
 os.chdir(root_path)
 try:
     os.chdir(path)
@@ -49,36 +116,27 @@ os.chdir(root_path)
 os.chdir(output_path)
 
 
-print("do you want to rename the compressed file?")
+print("Insert the new compressed file name")
 
-file_rename = input(": ")
+file_newname = input(": ")
 
-if (file_rename == "yes"):
-    print("please enter the whole file name, example [file_name.ext]")
-    print("enter new file name")
-    file_newname = input("here: ")
+#if nothing was inserted default to decompressed.txt
 
-    creaternfile = open(file_newname, 'w')
-    creaternfile.close()
-    savedecomp = open(file_newname, 'wb')
-    savedecomp.write(decompressed_data)
-    savedecomp.close()
-#Savecomp = open('decompressed
+if(file_newname == ""):
+    file_newname = "decompressed.txt"
 
+#create the file and write to it
 
+creaternfile = open(file_newname, 'w')
+creaternfile.close()
+savedecomp = open(file_newname, 'wb')
+savedecomp.write(decompressed_data)
+savedecomp.close()
 
-if (file_rename == "no"):
-
-    createfile = open('decompressed.txt', 'w')
-    createfile.close()
-    savecomp = open('compressed.txt', 'wb')
-    #compressed_data.encode("utf8", "ascii")
-    savecomp.write(decompressed_data)
-    savecomp.close()
 
 time_elapsed = time.time() - time_start
 
-print("decompression only took:", time_elapsed, "sec")
+print("decompression only took:", round(time_elapsed), "sec")
 
 print("decompression successful! app wil close in 10 sec")
 
