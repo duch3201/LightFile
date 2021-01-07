@@ -1,13 +1,90 @@
 import zlib
 import sys
 import time
-import base64
 import os
- 
-root_path = '/'
 
-file_name = input("please enter a file name:\n")
-path = input("enter a path to the file: ")
+#takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and removes the file name (in this case, C:/Users/JohnDoe/Desktop)
+
+def getPath(s):
+
+    #reverse string
+    
+    reversedstr = ""
+
+    for c in reversed(s):
+        reversedstr = reversedstr + c
+
+    #remove the rest of the path, leaving only the file name
+
+    tempfn = ""
+    shouldAdd = False
+    
+    for c in reversedstr:
+        if(shouldAdd == True):
+            tempfn = tempfn + c
+        if(c == '\\' or c == '/'):
+            shouldAdd = True
+        
+        
+
+    #reverse the file name to make it valid again
+
+    filename = ""
+    
+    for c in reversed(tempfn):
+        filename = filename + c
+    
+    
+    return filename
+
+#takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and returns just the file name (in this case, example.txt)
+
+# s = string containing the path
+
+def getFileNameFromPath(s):
+
+    #reverse string
+    
+    reversedstr = ""
+
+    for c in reversed(s):
+        reversedstr = reversedstr + c
+
+    #remove the rest of the path, leaving only the file name
+
+    tempfn = ""
+    
+    for c in reversedstr:
+        if(c == '\\' or c == '/'):
+            break
+        tempfn = tempfn + c
+        
+
+    #reverse the file name to make it valid again
+
+    filename = ""
+    
+    for c in reversed(tempfn):
+        filename = filename + c
+    
+    
+    return filename
+    
+
+
+root_path = '/'
+File_ext = ".lfc"
+
+
+
+print("Selected to compress.\nEnter the input file")
+path_total = input(": ")
+file_name = getFileNameFromPath(path_total)
+
+path = getPath(path_total)
+
+print("Enter the path to the output folder")
+output_path = input (": ")
 
 os.chdir(root_path)
 try:
@@ -22,29 +99,46 @@ except PermissionError:
 
 #os.chdir(path)
 
-str = open('file_name', 'br')
+#str = open('file_name', 'br')
 try:
     str = open(file_name, 'rb').read()
 except FileNotFoundError:
   print("This file does not exist!")
-
 #print(str)
+
+start_time = time.time()
 
 print("raw size:", sys.getsizeof(str))
 
-compressed_data = zlib.compress(str, 2)
+compressed_data = zlib.compress(str, 1)
+
+os.chdir(root_path)
+os.chdir(output_path)
 
 print("comppresed size:", sys.getsizeof(compressed_data))
 
-os.chdir(root_path)
+print("Insert the new compressed file name") #if it's blank simply default it to compressed.lfc
+new_compr_fn = input(": ")
 
-createfile = open('compressed.txt', 'w')
+if (new_compr_fn == ""):
+    new_compr_fn = "compressed" #nothing was chosen so change the selected name to compressed, as we default do it
+
+#create the file and write the data to it
+
+createfile = open(new_compr_fn + File_ext, 'w')
 createfile.close()
-savecomp = open('compressed.txt', 'wb')
-compressed_data.encode("utf8", "ascii")
+savecomp = open(new_compr_fn + File_ext, 'wb')
 savecomp.write(compressed_data)
 savecomp.close()
 
-os.sleep(10)
 
-#os.system('python header.py')
+
+elapsed_time = time.time() - start_time
+print("the compression took only:  ", round(elapsed_time),"sec" )
+
+# # i wrote 'elapsed_time' bc i am to lazy to check how
+# # to convert miliseconds to seconds, also it is 1:58 
+# # GMT+1 so this code could be buggy, but the time.time() thingy works great
+
+print("compression successful app will close in 10 sec")
+time.sleep(10)
