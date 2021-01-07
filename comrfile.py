@@ -2,16 +2,88 @@ import zlib
 import sys
 import time
 import os
- 
+
+#takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and removes the file name (in this case, C:/Users/JohnDoe/Desktop)
+
+def getPath(s):
+
+    #reverse string
+    
+    reversedstr = ""
+
+    for c in reversed(s):
+        reversedstr = reversedstr + c
+
+    #remove the rest of the path, leaving only the file name
+
+    tempfn = ""
+    shouldAdd = False
+    
+    for c in reversedstr:
+        if(shouldAdd == True):
+            tempfn = tempfn + c
+        if(c == '\\' or c == '/'):
+            shouldAdd = True
+        
+        
+
+    #reverse the file name to make it valid again
+
+    filename = ""
+    
+    for c in reversed(tempfn):
+        filename = filename + c
+    
+    
+    return filename
+
+#takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and returns just the file name (in this case, example.txt)
+
+# s = string containing the path
+
+def getFileNameFromPath(s):
+
+    #reverse string
+    
+    reversedstr = ""
+
+    for c in reversed(s):
+        reversedstr = reversedstr + c
+
+    #remove the rest of the path, leaving only the file name
+
+    tempfn = ""
+    
+    for c in reversedstr:
+        if(c == '\\' or c == '/'):
+            break
+        tempfn = tempfn + c
+        
+
+    #reverse the file name to make it valid again
+
+    filename = ""
+    
+    for c in reversed(tempfn):
+        filename = filename + c
+    
+    
+    return filename
+    
+
+
 root_path = '/'
 File_ext = ".lfc"
-print("please enter a file name")
-file_name = input(": ")
 
-print("enter a path to file")
-path = input(": ")
 
-print("where do you want to put the compressed file")
+
+print("Selected to compress.\nEnter the input file")
+path_total = input(": ")
+file_name = getFileNameFromPath(path_total)
+
+path = getPath(path_total)
+
+print("Enter the path to the output folder")
 output_path = input (": ")
 
 os.chdir(root_path)
@@ -45,29 +117,24 @@ os.chdir(output_path)
 
 print("comppresed size:", sys.getsizeof(compressed_data))
 
-print("do you want to rename the file?")
-option = input(": ")
+print("Insert the new compressed file name") #if it's blank simply default it to compressed.lfc
+new_compr_fn = input(": ")
 
-if (option == "yes"):
-    print("what do you want to name the compressed file")
-    new_compr_fn = input(": ")
-    createfile = open(new_compr_fn + File_ext, 'w')
-    createfile.close()
-    savecomp = open(new_compr_fn + File_ext, 'wb')
-    savecomp.write(compressed_data)
-    savecomp.close()
+if (new_compr_fn == ""):
+    new_compr_fn = "compressed" #nothing was chosen so change the selected name to compressed, as we default do it
 
-if (option == "no"):
+#create the file and write the data to it
 
-    createfile = open('compressed.lfc', 'w')
-    createfile.close()
-    savecomp = open('compressed.lfc', 'wb')
-    #compressed_data.encode("utf8", "ascii")
-    savecomp.write(compressed_data)
-    savecomp.close()
+createfile = open(new_compr_fn + File_ext, 'w')
+createfile.close()
+savecomp = open(new_compr_fn + File_ext, 'wb')
+savecomp.write(compressed_data)
+savecomp.close()
+
+
 
 elapsed_time = time.time() - start_time
-print("the compression took only:  ", elapsed_time,"sec" )
+print("the compression took only:  ", round(elapsed_time),"sec" )
 
 # # i wrote 'elapsed_time' bc i am to lazy to check how
 # # to convert miliseconds to seconds, also it is 1:58 
