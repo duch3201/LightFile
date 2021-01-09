@@ -110,7 +110,7 @@ start_time = time.time()
 
 print("raw size:", sys.getsizeof(str))
 
-compressed_data = zlib.compress(str, 1)
+compressed_data = zlib.compress(str, 9)
 
 os.chdir(root_path)
 os.chdir(output_path)
@@ -131,14 +131,8 @@ savecomp = open(new_compr_fn + File_ext, 'wb')
 savecomp.write(compressed_data)
 savecomp.close()
 
-
-
 elapsed_time = time.time() - start_time
 print("the compression took only:  ", round(elapsed_time),"sec" )
-
-# # i wrote 'elapsed_time' bc i am to lazy to check how
-# # to convert miliseconds to seconds, also it is 1:58 
-# # GMT+1 so this code could be buggy, but the time.time() thingy works great
 
 print("compression successful app will close in 10 sec")
 time.sleep(10)
