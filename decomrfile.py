@@ -129,7 +129,12 @@ os.chdir(app_root_path)
 #open_hist = open( "history.lfh")
 with open('history.lfh') as f:
     mylist = list(f)
-filename = getFileNameFromPath(mylist)
+
+os.chdir(root_path)
+os.chdir(output_path)
+
+print(mylist[0])
+filename = getFileNameFromPath(mylist[0])
 #os.remove("history.lfh")
 #this should not defult to a .txt file
 
