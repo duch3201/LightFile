@@ -125,21 +125,26 @@ file_newname = input(": ")
 
 #if nothing was inserted default to decompressed.txt
 app_root_path = os.path.dirname(os.path.realpath(__file__))
-os.chdir(app_root_path)
+os.chdir(app_root_path) 
 #open_hist = open( "history.lfh")
 with open('history.lfh') as f:
     mylist = list(f)
 
 os.chdir(root_path)
-os.chdir(output_path)
+os.chdir(output_path) 
 
 print(mylist[0])
 filename = getFileNameFromPath(mylist[0])
-#os.remove("history.lfh")
-#this should not defult to a .txt file
+
 
 if(file_newname == ""):
     file_newname = filename
+os.chdir(app_root_path)
+os.remove("history.lfh")
+os.chdir(output_path)
+#after reading the history file delete it
+#now that i have that working i will use it as a temp file bc i have no clue how to read a specific like in a file 
+#and internet tutorials aren't helping
 
 #create the file and write to it
 
@@ -149,11 +154,19 @@ savedecomp = open(file_newname, 'wb')
 savedecomp.write(decompressed_data)
 savedecomp.close()
 
+print("do you want to delete the compressed file")
 
-time_elapsed = time.time() - time_start
+delfile = input(": ")
 
-print("decompression only took:", round(time_elapsed), "sec")
+if (delfile == "yes" or delfile == 'y' or delfile == "Y"):
+    os.chdir(output_path)
+    os.remove(file_name)
+elif (delfile == "no" or delfile == 'n' or delfile == "N"):
 
-print("decompression successful! app wil close in 10 sec")
+    time_elapsed = time.time() - time_start
 
-time.sleep(10)
+    print("decompression only took:", round(time_elapsed), "sec")
+
+    print("decompression successful! app wil close in 10 sec")
+
+    time.sleep(10)

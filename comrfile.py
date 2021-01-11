@@ -149,8 +149,22 @@ history = open(histfileopn, 'w')
 history.write(path_total)
 history.close()
 
-elapsed_time = time.time() - start_time
-print("the compression took only:  ", round(elapsed_time),"sec" )
+print("do you want to delete the original file")
 
-print("compression successful app will close in 10 sec")
-time.sleep(10)
+delfile = input(": ")
+
+if (delfile == "yes" or delfile == 'y' or delfile == "Y"):
+    os.chdir(output_path)
+    os.remove(file_name)
+    elapsed_time = time.time() - start_time
+    print("the compression took only:  ", round(elapsed_time),"sec" )
+
+    print("compression successful app will close in 10 sec")
+    time.sleep(10)
+elif (delfile == "no" or delfile == 'n' or delfile == "N"):
+
+    elapsed_time = time.time() - start_time
+    print("the compression took only:  ", round(elapsed_time),"sec" )
+
+    print("compression successful app will close in 10 sec")
+    time.sleep(10)
