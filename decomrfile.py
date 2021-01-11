@@ -5,6 +5,8 @@ import sys
 import time
 import base64
 import os
+import ctypes
+ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # this is for the window title
 
 #takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and removes the file name (in this case, C:/Users/JohnDoe/Desktop)
 
@@ -109,6 +111,7 @@ print("compressed size:", sys.getsizeof(str))
 
 decompressed_data = zlib.decompress(str)
 #zobj = zlib.decompressobj(str)  # obj for decompressing data streams that won’t fit into memory at once.
+#this doesn't work :(
 
 print("decomppresed size:", sys.getsizeof(decompressed_data))
 
@@ -121,9 +124,17 @@ print("Insert the new compressed file name")
 file_newname = input(": ")
 
 #if nothing was inserted default to decompressed.txt
+app_root_path = os.path.dirname(os.path.realpath(__file__))
+os.chdir(app_root_path)
+#open_hist = open( "history.lfh")
+with open('history.lfh') as f:
+    mylist = list(f)
+filename = getFileNameFromPath(mylist)
+#os.remove("history.lfh")
+#this should not defult to a .txt file
 
 if(file_newname == ""):
-    file_newname = "decompressed.txt"
+    file_newname = filename
 
 #create the file and write to it
 

@@ -1,5 +1,7 @@
 import os
 import time
+import ctypes
+ctypes.windll.kernel32.SetConsoleTitleW("LightFile")#this is for the window title
 
 def main():
 
@@ -16,9 +18,9 @@ def main():
             os.system('python decomrfile.py')
             keepLooping = False
         else:
-            print("Invalid option!")
+            print("Invalid option! Please try again.")
        
-    print("The app will close after 10 sec")
-    time.sleep(10)
+    #print("The app will close after 10 sec")
+    #time.sleep(10)
 
 main()

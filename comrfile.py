@@ -2,7 +2,9 @@ import zlib
 import sys
 import time
 import os
-
+from datetime import datetime
+import ctypes
+ctypes.windll.kernel32.SetConsoleTitleW("LightFile") #this is for the window title
 #takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and removes the file name (in this case, C:/Users/JohnDoe/Desktop)
 
 def getPath(s):
@@ -112,6 +114,7 @@ print("raw size:", sys.getsizeof(str))
 
 compressed_data = zlib.compress(str, 9)
 
+
 os.chdir(root_path)
 os.chdir(output_path)
 
@@ -130,6 +133,21 @@ createfile.close()
 savecomp = open(new_compr_fn + File_ext, 'wb')
 savecomp.write(compressed_data)
 savecomp.close()
+
+app_root_path = os.path.dirname(os.path.realpath(__file__))
+
+#history file
+histfileopn = "history.lfh"
+
+os.chdir(app_root_path)
+current_datetime = datetime.now()
+current_time = datetime.now().time()
+
+# creating / opening the historu.lfh file
+
+history = open(histfileopn, 'w')
+history.write(path_total)
+history.close()
 
 elapsed_time = time.time() - start_time
 print("the compression took only:  ", round(elapsed_time),"sec" )
