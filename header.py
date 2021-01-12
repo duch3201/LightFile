@@ -101,16 +101,16 @@ def main():
         handleArguments()
 
     print("compress(c) a file, or decompress(d) a file")
-    
+    path = getPath(abspath(getsourcefile(lambda:0)))
     keepLooping = True
     while keepLooping == True:
         option = input(": ")
         
         if (option == "compress" or option == 'c' or option == "C" ):
-            os.system('python comrfile.py')
+            os.system('python ' + path + '\\' + 'comrfile.py ')
             keepLooping = False
         elif (option == "decompress" or option == 'd' or option == "D"):
-            os.system('python decomrfile.py')
+            os.system('python ' + path + '\\' + 'decomrfile.py ')
             keepLooping = False
         else:
             print("Invalid option! Please try again.")
