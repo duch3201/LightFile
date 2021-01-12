@@ -6,6 +6,8 @@ import time
 import base64
 import os
 import ctypes
+from inspect import getsourcefile
+from os.path import abspath
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # this is for the window title
 
 #takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and removes the file name (in this case, C:/Users/JohnDoe/Desktop)
@@ -76,15 +78,21 @@ def getFileNameFromPath(s):
     return filename
 
 root_path = '/'
+if(len(sys.argv) == 1):
+    print("Selected to decompress.\nEnter the input file")
+    path_total = input(": ")
+    print("Enter the path to the output folder")
+    output_path = input (": ")
 
-print("Selected to decompress.\nEnter the input file")
-path_total = input(": ")
-file_name = getFileNameFromPath(path_total)
+    file_name  = getFileNameFromPath(path_total)
+    path       = getPath(path_total)
+else:
+    path_total = sys.argv[1]
+    output_path = getPath(sys.argv[2])
+    
+    file_name  = getFileNameFromPath(sys.argv[1])
+    path       = getPath(sys.argv[1])
 
-path = getPath(path_total)
-
-print("Enter the path to the output folder")
-output_path = input (": ")
 
 #File_rename = "no"
 os.chdir(root_path)
@@ -118,13 +126,14 @@ print("decomppresed size:", sys.getsizeof(decompressed_data))
 os.chdir(root_path)
 os.chdir(output_path)
 
-
-print("Insert the new compressed file name")
-
-file_newname = input(": ")
+if(len(sys.argv) == 1):
+    print("Insert the new compressed file name")
+    file_newname = input(": ")
+else:
+    file_newname = getFileNameFromPath(sys.argv[2])
 
 #if nothing was inserted default to decompressed.txt
-app_root_path = os.path.dirname(os.path.realpath(__file__))
+app_root_path =  getPath(abspath(getsourcefile(lambda:0)))
 os.chdir(app_root_path) 
 #open_hist = open( "history.lfh")
 with open('history.lfh') as f:
@@ -153,11 +162,13 @@ creaternfile.close()
 savedecomp = open(file_newname, 'wb')
 savedecomp.write(decompressed_data)
 savedecomp.close()
+if(len(sys.argv) == 1):
+    print("do you want to delete the compressed file")
 
-print("do you want to delete the compressed file")
-
-delfile = input(": ")
-
+    delfile = input(": ")
+else:
+    delfile = "n"
+    
 if (delfile == "yes" or delfile == 'y' or delfile == "Y"):
     os.chdir(output_path)
     os.remove(file_name)
@@ -166,7 +177,7 @@ elif (delfile == "no" or delfile == 'n' or delfile == "N"):
     time_elapsed = time.time() - time_start
 
     print("decompression only took:", round(time_elapsed), "sec")
+    if(len(sys.argv) == 1):
+        print("decompression successful! app wil close in 10 sec")
 
-    print("decompression successful! app wil close in 10 sec")
-
-    time.sleep(10)
+        time.sleep(10)

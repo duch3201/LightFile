@@ -4,6 +4,8 @@ import time
 import os
 from datetime import datetime
 import ctypes
+from inspect import getsourcefile
+from os.path import abspath
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile") #this is for the window title
 #takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and removes the file name (in this case, C:/Users/JohnDoe/Desktop)
 
@@ -79,14 +81,21 @@ File_ext = ".lfc"
 
 
 
-print("Selected to compress.\nEnter the input file")
-path_total = input(": ")
-file_name = getFileNameFromPath(path_total)
+#if no extra arguments give the standard selection
+if(len(sys.argv) == 1):
+    print("Selected to compress.\nEnter the input file")
+    path_total = input(": ")
+    file_name = getFileNameFromPath(path_total)
 
-path = getPath(path_total)
+    path = getPath(path_total)
 
-print("Enter the path to the output folder")
-output_path = input (": ")
+    print("Enter the path to the output folder")
+    output_path = input (": ")
+else:
+    path_total = sys.argv[1]
+    path = getPath(sys.argv[1])
+    file_name = getFileNameFromPath(sys.argv[1])
+    output_path = getPath(sys.argv[2])
 
 os.chdir(root_path)
 try:
@@ -120,8 +129,11 @@ os.chdir(output_path)
 
 print("comppresed size:", sys.getsizeof(compressed_data))
 
-print("Insert the new compressed file name") #if it's blank simply default it to compressed.lfc
-new_compr_fn = input(": ")
+if(len(sys.argv) == 1):
+    print("Insert the new compressed file name") #if it's blank simply default it to compressed.lfc
+    new_compr_fn = input(": ")
+else:
+    new_compr_fn = getFileNameFromPath(sys.argv[2])
 
 if (new_compr_fn == ""):
     new_compr_fn = "compressed" #nothing was chosen so change the selected name to compressed, as we default do it
@@ -134,7 +146,7 @@ savecomp = open(new_compr_fn + File_ext, 'wb')
 savecomp.write(compressed_data)
 savecomp.close()
 
-app_root_path = os.path.dirname(os.path.realpath(__file__))
+app_root_path = getPath(abspath(getsourcefile(lambda:0)))
 
 #history file
 histfileopn = "history.lfh"
@@ -149,9 +161,11 @@ history = open(histfileopn, 'w')
 history.write(path_total)
 history.close()
 
-print("do you want to delete the original file")
-
-delfile = input(": ")
+if(len(sys.argv) == 1):
+    print("do you want to delete the original file")
+    delfile = input(": ")
+else:
+    delfile = "n"
 
 if (delfile == "yes" or delfile == 'y' or delfile == "Y"):
     os.chdir(output_path)
@@ -165,6 +179,6 @@ elif (delfile == "no" or delfile == 'n' or delfile == "N"):
 
     elapsed_time = time.time() - start_time
     print("the compression took only:  ", round(elapsed_time),"sec" )
-
-    print("compression successful app will close in 10 sec")
-    time.sleep(10)
+    if(len(sys.argv) == 1):
+        print("compression successful app will close in 10 sec")
+        time.sleep(10)
