@@ -43,13 +43,10 @@ def getPath(s):
 def handleArguments():
     
     if getattr(sys, 'frozen', False):
-        print("frozen")
         fpath = os.path.dirname(sys.executable)
     else:
-        print("not frozen")
         fpath = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
 
-    print(fpath)
     
     opts, args = getopt.getopt(sys.argv[1:], "hc:d:o:") #get the arguments and sort them out with getopt
     
@@ -98,9 +95,9 @@ def handleArguments():
     #call the files
         
     if(cmpOrDcmp == "-c"):
-        os.system('python ' + fpath + '\\' + 'comrfile.py '   + inputfile + " " + outputfile)
+        os.system('python "' + fpath + '\\' + 'comrfile.py" '   + inputfile + " " + outputfile)
     else:
-        os.system('python ' + fpath + '\\' + 'decomrfile.py ' + inputfile + " " + outputfile)
+        os.system('python "' + fpath + '\\' + 'decomrfile.py" ' + inputfile + " " + outputfile)
     sys.exit()
     
     
@@ -111,23 +108,21 @@ def main():
     print("compress(c) a file, or decompress(d) a file")
 
     if getattr(sys, 'frozen', False):
-        print("frozen")
-        fpath = os.path.dirname(sys.executable)
+        fpath = sys.executable
     else:
-        print("not frozen")
-        fpath = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+        fpath = getattr(sys, '_MEIPASS', __file__)
 
-    print(fpath)
+    fpath = getPath(fpath)
         
     keepLooping = True
     while keepLooping == True:
         option = input(": ")
         
         if (option == "compress" or option == 'c' or option == "C" ):
-            os.system('python ' + fpath + '\\' + 'comrfile.py ')
+            os.system('python "' + fpath + '\\' + 'comrfile.py"')
             keepLooping = False
         elif (option == "decompress" or option == 'd' or option == "D"):
-            os.system('python ' + fpath + '\\' + 'decomrfile.py ')
+            os.system('python "' + fpath + '\\' + 'decomrfile.py"')
             keepLooping = False
         else:
             print("Invalid option! Please try again.")
