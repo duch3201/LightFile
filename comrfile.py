@@ -85,19 +85,22 @@ File_ext = ".lfc"
 if(len(sys.argv) == 1):
     print("Selected to compress.\nEnter the input file")
     path_total = input(": ")
-    file_name = getFileNameFromPath(path_total)
-
-    path = getPath(path_total)
-
     print("Enter the path to the output folder")
     output_path = input (": ")
 else:
     path_total = sys.argv[1]
-    path = getPath(sys.argv[1])
-    file_name = getFileNameFromPath(sys.argv[1])
     output_path = getPath(sys.argv[2])
 
+path = getPath(path_total)
+file_name = getFileNameFromPath(path_total)
+    
+
+#change to the system root path
+
 os.chdir(root_path)
+
+#try changing to the path of the file
+
 try:
     os.chdir(path)
 except FileNotFoundError:
@@ -107,15 +110,12 @@ except NotADirectoryError:
 except PermissionError:
     print("You do not have permissions to change to {0}".format(path))
 
+#read the file
 
-#os.chdir(path)
-
-#str = open('file_name', 'br')
 try:
     str = open(file_name, 'rb').read()
 except FileNotFoundError:
   print("This file does not exist!")
-#print(str)
 
 start_time = time.time()
 
@@ -123,11 +123,14 @@ print("raw size:", sys.getsizeof(str))
 
 compressed_data = zlib.compress(str, 9)
 
+#change to the output location
 
 os.chdir(root_path)
 os.chdir(output_path)
 
 print("comppresed size:", sys.getsizeof(compressed_data))
+
+#ask for name if not automated
 
 if(len(sys.argv) == 1):
     print("Insert the new compressed file name") #if it's blank simply default it to compressed.lfc
@@ -161,6 +164,8 @@ history = open(histfileopn, 'w')
 history.write(path_total)
 history.close()
 
+#delete the file if the user wants.
+
 if(len(sys.argv) == 1):
     print("do you want to delete the original file")
     delfile = input(": ")
@@ -170,15 +175,13 @@ else:
 if (delfile == "yes" or delfile == 'y' or delfile == "Y"):
     os.chdir(output_path)
     os.remove(file_name)
-    elapsed_time = time.time() - start_time
-    print("the compression took only:  ", round(elapsed_time),"sec" )
 
+# print elapsed time
+elapsed_time = time.time() - start_time
+print("the compression took only:  ", round(elapsed_time),"sec" )
+
+#wait 10 seconds and close if not run by commandline
+
+if(len(sys.argv) == 1):
     print("compression successful app will close in 10 sec")
     time.sleep(10)
-elif (delfile == "no" or delfile == 'n' or delfile == "N"):
-
-    elapsed_time = time.time() - start_time
-    print("the compression took only:  ", round(elapsed_time),"sec" )
-    if(len(sys.argv) == 1):
-        print("compression successful app will close in 10 sec")
-        time.sleep(10)

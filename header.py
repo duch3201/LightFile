@@ -103,12 +103,20 @@ def handleArguments():
     
     
 def main():
-    os.system('cls')
+
+    #if there are any commandline arguments then use the handleArguments() function
+    
     if(len(sys.argv) > 1):
         handleArguments()
 
+    #clear the screen
+    
+    os.system('cls||clear')
+    
     print("compress(c) a file, or decompress(d) a file")
 
+    #check if it is running in a pyInstaller bundle and get the path to the executable in the appropriate way
+    
     if getattr(sys, 'frozen', False):
         fpath = sys.executable
     else:
@@ -117,10 +125,13 @@ def main():
     fpath = getPath(fpath)
         
     fileversion = "beta 1.0" 
-
+    
     keepLooping = True
+    
     while keepLooping == True:
         option = input(": ")
+
+        #check if the user has selected to compress or decompress and call the according file to it.
         
         if (option == "compress" or option == 'c' or option == "C" ):
             os.system('python "' + fpath + '\\' + 'comrfile.py"')
@@ -129,17 +140,8 @@ def main():
             os.system('python "' + fpath + '\\' + 'decomrfile.py"')
             keepLooping = False
         elif (option == "easteregg" or option =='n' or option == 'N'):
-            print("LightFile.\n LightFile version", fileversion) 
-            time.sleep(5)
-            main()
+            print("LightFile.\n LightFile version", fileversion, "\n") 
         else:
             print("Invalid option! Please try again.")
-       
-        
-            
-
-
-    #print("The app will close after 10 sec")
-    #time.sleep(10)
 
 main()
