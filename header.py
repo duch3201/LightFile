@@ -41,7 +41,10 @@ def getPath(s):
 
 def handleArguments():
     
-    
+    if getattr(sys, 'frozen', False):
+        path = sys._MEIPASS
+    else:
+        path = getPath(abspath(getsourcefile(lambda:0)))
     
     opts, args = getopt.getopt(sys.argv[1:], "hc:d:o:") #get the arguments and sort them out with getopt
     
@@ -90,9 +93,9 @@ def handleArguments():
     #call the files
         
     if(cmpOrDcmp == "-c"):
-        os.system('python ' + getPath(abspath(getsourcefile(lambda:0))) + '\\' + 'comrfile.py '   + inputfile + " " + outputfile)
+        os.system('python ' + path + '\\' + 'comrfile.py '   + inputfile + " " + outputfile)
     else:
-        os.system('python ' + getPath(abspath(getsourcefile(lambda:0))) + '\\' + 'decomrfile.py ' + inputfile + " " + outputfile)
+        os.system('python ' + path + '\\' + 'decomrfile.py ' + inputfile + " " + outputfile)
     sys.exit()
     
     
@@ -101,7 +104,12 @@ def main():
         handleArguments()
 
     print("compress(c) a file, or decompress(d) a file")
-    path = getPath(abspath(getsourcefile(lambda:0)))
+
+    if getattr(sys, 'frozen', False):
+        path = sys._MEIPASS
+    else:
+        path = getPath(abspath(getsourcefile(lambda:0)))
+    
     keepLooping = True
     while keepLooping == True:
         option = input(": ")
