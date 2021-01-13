@@ -1,4 +1,5 @@
 import os
+from os import path
 import time
 import ctypes
 import sys
@@ -41,10 +42,7 @@ def getPath(s):
 
 def handleArguments():
     
-    if getattr(sys, 'frozen', False):
-        path = sys._MEIPASS
-    else:
-        path = getPath(abspath(getsourcefile(lambda:0)))
+    fpath = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
     
     opts, args = getopt.getopt(sys.argv[1:], "hc:d:o:") #get the arguments and sort them out with getopt
     
@@ -93,9 +91,9 @@ def handleArguments():
     #call the files
         
     if(cmpOrDcmp == "-c"):
-        os.system('python ' + path + '\\' + 'comrfile.py '   + inputfile + " " + outputfile)
+        os.system('python ' + fpath + '\\' + 'comrfile.py '   + inputfile + " " + outputfile)
     else:
-        os.system('python ' + path + '\\' + 'decomrfile.py ' + inputfile + " " + outputfile)
+        os.system('python ' + fpath + '\\' + 'decomrfile.py ' + inputfile + " " + outputfile)
     sys.exit()
     
     
@@ -105,20 +103,17 @@ def main():
 
     print("compress(c) a file, or decompress(d) a file")
 
-    if getattr(sys, 'frozen', False):
-        path = sys._MEIPASS
-    else:
-        path = getPath(abspath(getsourcefile(lambda:0)))
-    
+    fpath = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+        
     keepLooping = True
     while keepLooping == True:
         option = input(": ")
         
         if (option == "compress" or option == 'c' or option == "C" ):
-            os.system('python ' + path + '\\' + 'comrfile.py ')
+            os.system('python ' + fpath + '\\' + 'comrfile.py ')
             keepLooping = False
         elif (option == "decompress" or option == 'd' or option == "D"):
-            os.system('python ' + path + '\\' + 'decomrfile.py ')
+            os.system('python ' + fpath + '\\' + 'decomrfile.py ')
             keepLooping = False
         else:
             print("Invalid option! Please try again.")
