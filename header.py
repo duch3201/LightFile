@@ -42,7 +42,14 @@ def getPath(s):
 
 def handleArguments():
     
-    fpath = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+    if getattr(sys, 'frozen', False):
+        print("frozen")
+        fpath = os.path.dirname(sys.executable)
+    else:
+        print("not frozen")
+        fpath = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+
+    print(fpath)
     
     opts, args = getopt.getopt(sys.argv[1:], "hc:d:o:") #get the arguments and sort them out with getopt
     
@@ -103,7 +110,14 @@ def main():
 
     print("compress(c) a file, or decompress(d) a file")
 
-    fpath = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+    if getattr(sys, 'frozen', False):
+        print("frozen")
+        fpath = os.path.dirname(sys.executable)
+    else:
+        print("not frozen")
+        fpath = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
+
+    print(fpath)
         
     keepLooping = True
     while keepLooping == True:
