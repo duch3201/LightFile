@@ -8,6 +8,7 @@ from inspect import getsourcefile
 from os.path import abspath
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile")#this is for the window title
 
+
 def getPath(s):
 
     #reverse string
@@ -102,6 +103,7 @@ def handleArguments():
     
     
 def main():
+    os.system('cls')
     if(len(sys.argv) > 1):
         handleArguments()
 
@@ -114,6 +116,8 @@ def main():
 
     fpath = getPath(fpath)
         
+    fileversion = "beta 1.0" 
+
     keepLooping = True
     while keepLooping == True:
         option = input(": ")
@@ -124,9 +128,17 @@ def main():
         elif (option == "decompress" or option == 'd' or option == "D"):
             os.system('python "' + fpath + '\\' + 'decomrfile.py"')
             keepLooping = False
+        elif (option == "easteregg" or option =='n' or option == 'N'):
+            print("LightFile.\n LightFile version", fileversion) 
+            time.sleep(5)
+            main()
         else:
             print("Invalid option! Please try again.")
        
+        
+            
+
+
     #print("The app will close after 10 sec")
     #time.sleep(10)
 
