@@ -1,0 +1,237 @@
+import zlib
+import sys
+import time
+import os
+from datetime import datetime
+import ctypes
+from inspect import getsourcefile
+from os.path import abspath
+ctypes.windll.kernel32.SetConsoleTitleW("LightFile") #this is for the window title
+#takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and removes the file name (in this case, C:/Users/JohnDoe/Desktop)
+
+def getPath(s):
+
+    #reverse string
+    
+    reversedstr = ""
+
+    for c in reversed(s):
+        reversedstr = reversedstr + c
+
+    #remove the rest of the path, leaving only the file name
+
+    tempfn = ""
+    shouldAdd = False
+    
+    for c in reversedstr:
+        if(shouldAdd == True):
+            tempfn = tempfn + c
+        if(c == '\\' or c == '/'):
+            shouldAdd = True
+        
+        
+
+    #reverse the file name to make it valid again
+
+    filename = ""
+    
+    for c in reversed(tempfn):
+        filename = filename + c
+    
+    
+    return filename
+
+#takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and returns just the file name (in this case, example.txt)
+
+# s = string containing the path
+
+def getFileNameFromPath(s):
+
+    #reverse string
+    
+    reversedstr = ""
+
+    for c in reversed(s):
+        reversedstr = reversedstr + c
+
+    #remove the rest of the path, leaving only the file name
+
+    tempfn = ""
+    
+    for c in reversedstr:
+        if(c == '\\' or c == '/'):
+            break
+        tempfn = tempfn + c
+        
+
+    #reverse the file name to make it valid again
+
+    filename = ""
+    
+    for c in reversed(tempfn):
+        filename = filename + c
+    
+    
+    return filename
+    
+os.chdir("Y:\LightFile\lang\ENG")
+
+root_path = '/'
+File_ext = ".lfc"
+line88 = open("88.txt", 'r')
+line90 = open("90.txt", 'r')
+line111 = open("111.txt", 'r')
+line114 = open("114.txt", 'r')
+line117 = open("117.txt", 'r')
+line125 = open("125.txt", 'r')
+line129 = open("129.txt", 'r')
+line140 = open("140.txt", 'r')
+line145 = open("145.txt", 'r')
+line151 = open("151.txt", 'r')
+line181 = open("181.txt", 'r')
+line194 = open("194.txt", 'r')
+line212 = open("212.txt", 'r')
+
+
+
+#if no extra arguments give the standard selection
+if(len(sys.argv) == 1):
+    print(line88.read())
+    path_total = input(": ")
+    print(line90.read())
+    output_path = input (": ")
+else:
+    path_total = sys.argv[1]
+    output_path = getPath(sys.argv[2])
+
+path = getPath(path_total)
+file_name = getFileNameFromPath(path_total)
+    
+did_find_file = True
+file_found_time = datetime.now
+
+#change to the system root path
+
+os.chdir(root_path)
+
+#try changing to the path of the file
+
+try:
+    os.chdir(path)
+except FileNotFoundError:
+    print(line111.read().format(path))
+    time.sleep(10)
+except NotADirectoryError:
+    print(line114.read().format(path))
+    time.sleep(10)
+except PermissionError:
+    print(line117.read().format(path))
+    time.sleep(10)
+
+#read the file
+
+try:
+    str = open(file_name.read(), 'rb').read()
+except FileNotFoundError:
+  print(line125.read())
+
+start_time = time.time()
+
+print(line129, sys.getsizeof(str))
+
+compressed_data = zlib.compress(str, 9)
+
+#change to the output location
+
+did_compress = True
+
+os.chdir(root_path)
+os.chdir(output_path)
+
+print(line140.read(), sys.getsizeof(compressed_data))
+
+#ask for name if not automated
+
+if(len(sys.argv) == 1):
+    print(line145) #if it's blank simply default it to compressed.lfc
+    new_compr_fn = input(": ")
+else:
+    new_compr_fn = getFileNameFromPath(sys.argv[2])
+
+if (new_compr_fn == ""):
+    new_compr_fn = "compressed" #nothing was chosen so change the selected name to compressed, as we default do it
+
+#create the file and write the                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      to it
+
+createfile = open(new_compr_fn + File_ext, 'w')
+createfile.close()
+savecomp = open(new_compr_fn + File_ext, 'wb')
+savecomp.write(compressed_data)
+savecomp.close()
+
+did_save_compressed_file = True
+
+app_root_path = getPath(abspath(getsourcefile(lambda:0)))
+
+#history file
+histfileopn = "history.lfh"
+
+os.chdir(app_root_path)
+current_datetime = datetime.now()
+current_time = datetime.now().time()
+
+# creating / opening the historu.lfh file
+
+history = open(histfileopn, 'w')
+history.write(path_total)
+history.close()
+
+#delete the file if the user wants.
+
+if(len(sys.argv) == 1):
+    print(line151.read())
+    delfile = input(": ")
+else:
+    delfile = "n"
+    did_delete_file = False
+
+if (delfile == "yes" or delfile == 'y' or delfile == "Y"):
+    os.chdir(output_path)
+    os.remove(file_name)
+    did_delete_file = True
+
+# print elapsed time
+elapsed_time = time.time() - start_time
+print(line181.read(), round(elapsed_time),"sec" )
+
+#get path for the documents folder
+#os.path.expanduser(documents)
+#os.chdir(documents_path)
+#if(path.exist(documents_path + "LightFileLogs")):
+ #   #enter the directory
+  #  os.chdir("lightFileLogs")
+   # logging.basicConfig(filename="logfilename.log", level=logging.INFO)
+#create the directory for logs
+#mkdir("LightFileLogs")
+#os.chdir("lightFileLogs")
+#logging.basicConfig(filename="logfilename.log", level=logging.INFO)
+
+
+#wait 10 seconds and close if not run by commandline
+
+if(len(sys.argv) == 1):
+    print(line194.read())
+    time.sleep(10)
+
+
+
+# this is the error that this... monstrosity gave me
+
+# Selected to compress.\nEnter the input file
+# : c:\Users\krzysztof\Desktop\Line_One.txt
+# Enter the path to the output folder
+# : .read  
+# Traceback (most recent call last):
+ # File "y:\LightFile\comrfile.py", line 134, in <module>
+  #  str = open(file_name.read(), 'rb').read()
+#AttributeError: 'str' object has no attribute 'read'
