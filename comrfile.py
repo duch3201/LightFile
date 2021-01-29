@@ -78,6 +78,8 @@ def getFileNameFromPath(s):
 
 root_path = '/'
 File_ext = ".lfc"
+chunksize = 1024
+
 
 
 
@@ -94,6 +96,8 @@ else:
 path = getPath(path_total)
 file_name = getFileNameFromPath(path_total)
     
+did_find_file = True
+file_found_time = datetime.now
 
 #change to the system root path
 
@@ -105,17 +109,28 @@ try:
     os.chdir(path)
 except FileNotFoundError:
     print("Directory: {0} does not exist!".format(path))
+    time.sleep(10)
 except NotADirectoryError:
     print("{0} is not a directory!".format(path))
+    time.sleep(10)
 except PermissionError:
     print("You do not have permissions to change to {0}".format(path))
+    time.sleep(10)
 
 #read the file
 
 try:
-    str = open(file_name, 'rb').read()
+    with open(file_name, 'rb') as str:
+        while True:
+            file_name = str.read(chunksize)
+            if not file_name:
+                break
+
+    #no clue if this works, this needs testing
+
 except FileNotFoundError:
-  print("This file does not exist!")
+    logging.critical('This file does not exist!')
+    print("This file does not exist!")
 
 start_time = time.time()
 
@@ -124,6 +139,8 @@ print("raw size:", sys.getsizeof(str))
 compressed_data = zlib.compress(str, 9)
 
 #change to the output location
+
+did_compress = True
 
 os.chdir(root_path)
 os.chdir(output_path)
@@ -141,13 +158,15 @@ else:
 if (new_compr_fn == ""):
     new_compr_fn = "compressed" #nothing was chosen so change the selected name to compressed, as we default do it
 
-#create the file and write the data to it
+#create the file and write the                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      to it
 
 createfile = open(new_compr_fn + File_ext, 'w')
 createfile.close()
 savecomp = open(new_compr_fn + File_ext, 'wb')
 savecomp.write(compressed_data)
 savecomp.close()
+
+did_save_compressed_file = True
 
 app_root_path = getPath(abspath(getsourcefile(lambda:0)))
 
@@ -171,17 +190,38 @@ if(len(sys.argv) == 1):
     delfile = input(": ")
 else:
     delfile = "n"
+    did_delete_file = False
 
 if (delfile == "yes" or delfile == 'y' or delfile == "Y"):
     os.chdir(output_path)
     os.remove(file_name)
+    did_delete_file = True
 
 # print elapsed time
 elapsed_time = time.time() - start_time
 print("the compression took only:  ", round(elapsed_time),"sec" )
+
+#get path for the documents folder
+os.path.expanduser(documents)
+os.chdir(documents_path)
+if(path.exist(documents_path + "LightFileLogs")):
+    #enter the directory
+    os.chdir("lightFileLogs")
+    logfile = logging.basicConfig(filename="logfilename.log", level=logging.INFO)
+    logfilesave = open("latest.txt", 'rw')
+else:
+    #create the directory for logs
+    mkdir("LightFileLogs")
+    os.chdir("lightFileLogs")
+    logging.basicConfig(filename="logfilename.log", level=logging.INFO)
+    logfilesave = open("latest.txt", 'rw')
+
 
 #wait 10 seconds and close if not run by commandline
 
 if(len(sys.argv) == 1):
     print("compression successful app will close in 10 sec")
     time.sleep(10)
+
+
+#EOF
