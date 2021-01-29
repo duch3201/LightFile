@@ -73,21 +73,65 @@ def getFileNameFromPath(s):
     
     
     return filename
-    
 
-
-root_path = '/'
 File_ext = ".lfc"
 chunksize = 1024
+root_path = '/'
 
+#----|ARDT|----
+app_root_path = getPath(abspath(getsourcefile(lambda:0)))
+os.chdir(app_root_path)
+os.chdir("config")
+config_file = open ("languages.txt", 'r')
+
+#----|ARDT config file check|----
+
+if (config_file == "ENG"):
+    os.chdir(root_path)
+    os.chdir(app_root_path)
+    os.chdir("lang")
+    line88 = open("88.txt", 'r')
+    line90 = open("90.txt", 'r')
+    line111 = open("111.txt", 'r')
+    line114 = open("114.txt", 'r')
+    line117 = open("117.txt", 'r')
+    line125 = open("125.txt", 'r')
+    line129 = open("129.txt", 'r')
+    line140 = open("140.txt", 'r')
+    line145 = open("145.txt", 'r')
+    line151 = open("151.txt", 'r')
+    line181 = open("181.txt", 'r')
+    line194 = open("194.txt", 'r')
+    line212 = open("212.txt", 'r')
+
+
+if(config_file == "PL"):
+    os.chdir(root_path)
+    os.chdir(app_root_path)
+    os.chdir("lang")
+    line88 = open("88.txt", 'r')
+    line90 = open("90.txt", 'r')
+    line111 = open("111.txt", 'r')
+    line114 = open("114.txt", 'r')
+    line117 = open("117.txt", 'r')
+    line125 = open("125.txt", 'r')
+    line129 = open("129.txt", 'r')
+    line140 = open("140.txt", 'r')
+    line145 = open("145.txt", 'r')
+    line151 = open("151.txt", 'r')
+    line181 = open("181.txt", 'r')
+    line194 = open("194.txt", 'r')
+    line212 = open("212.txt", 'r')
 
 
 
 #if no extra arguments give the standard selection
 if(len(sys.argv) == 1):
-    print("Selected to compress.\nEnter the input file")
+    print(line88.read())
+    line88.close()
     path_total = input(": ")
-    print("Enter the path to the output folder")
+    print(line90.read())
+    line90.close()
     output_path = input (": ")
 else:
     path_total = sys.argv[1]
@@ -108,29 +152,28 @@ os.chdir(root_path)
 try:
     os.chdir(path)
 except FileNotFoundError:
-    print("Directory: {0} does not exist!".format(path))
+    print(line111.read().format(path))
+    line111.close()
     time.sleep(10)
 except NotADirectoryError:
-    print("{0} is not a directory!".format(path))
+    print(line114.read().format(path))
+    line114.close()
     time.sleep(10)
 except PermissionError:
-    print("You do not have permissions to change to {0}".format(path))
+    print(line117.read().format(path))
+    line117.close()
     time.sleep(10)
 
 #read the file
 
 try:
-    with open(file_name, 'rb') as str:
-        while True:
-            file_name = str.read(chunksize)
-            if not file_name:
-                break
-
-    #no clue if this works, this needs testing
+    str = open(file_name, 'rb').read()
 
 except FileNotFoundError:
     logging.critical('This file does not exist!')
     print("This file does not exist!")
+
+#somewhere here i noticed a memory leak, Too Bad!
 
 start_time = time.time()
 
@@ -145,12 +188,12 @@ did_compress = True
 os.chdir(root_path)
 os.chdir(output_path)
 
-print("comppresed size:", sys.getsizeof(compressed_data))
-
+print(line140.read(), sys.getsizeof(compressed_data))
+line140.close()
 #ask for name if not automated
 
 if(len(sys.argv) == 1):
-    print("Insert the new compressed file name") #if it's blank simply default it to compressed.lfc
+    print(line145.read()) #if it's blank simply default it to compressed.lfc
     new_compr_fn = input(": ")
 else:
     new_compr_fn = getFileNameFromPath(sys.argv[2])
@@ -168,7 +211,6 @@ savecomp.close()
 
 did_save_compressed_file = True
 
-app_root_path = getPath(abspath(getsourcefile(lambda:0)))
 
 #history file
 histfileopn = "history.lfh"
@@ -186,7 +228,8 @@ history.close()
 #delete the file if the user wants.
 
 if(len(sys.argv) == 1):
-    print("do you want to delete the original file")
+    print(line151.read())
+    line151.close()
     delfile = input(": ")
 else:
     delfile = "n"
@@ -199,7 +242,8 @@ if (delfile == "yes" or delfile == 'y' or delfile == "Y"):
 
 # print elapsed time
 elapsed_time = time.time() - start_time
-print("the compression took only:  ", round(elapsed_time),"sec" )
+print(line181.read(), round(elapsed_time),"sec" )
+line181.close()
 
 #get path for the documents folder
 os.path.expanduser(documents)
