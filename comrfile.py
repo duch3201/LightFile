@@ -90,9 +90,7 @@ languagePL = "PL"
 app_root_path = getPath(abspath(getsourcefile(lambda:0)))
 os.chdir(app_root_path)
 os.chdir("config")
-config_file = open ("languages.txt", 'r')
-
-print(config_file.read())
+config_file = open ("languages.txt", 'r').read()
 
 #----|ARDT config file check|----
 try:
