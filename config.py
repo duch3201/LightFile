@@ -8,9 +8,9 @@ print("english=ENG, polish=PL")
 config1 = input(": ")
 
 if(config1 == "ENG"):
-    config_languages.write(config1)
+    config_languages.write("ENG")
 
 if(config1 == "PL"):
-    config_languages.write(config1)
+    config_languages.write("PL")
 
 #oh god how the f*** did that work?
