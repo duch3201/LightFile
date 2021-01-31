@@ -84,38 +84,19 @@ File_ext = ".lfc"
 chunksize = 1024
 root_path = '/'
 languages_folder = "lang"
-languageENG = "ENG"
-languagePL = "PL"
 
 #----|ARDT|----
 app_root_path = getPath(abspath(getsourcefile(lambda:0)))
 os.chdir(app_root_path)
 os.chdir("config")
 config_file = open ("languages.txt", 'r').read()
-<<<<<<< Updated upstream
-=======
-
-
->>>>>>> Stashed changes
 
 #----|ARDT config file check|----
 try:
-    if (config_file == "ENG"):
-        os.chdir(root_path)
-        os.chdir(app_root_path)
-        os.chdir(languages_folder)
-        os.chdir(languageENG)
-except FileNotFoundError:
-    print("could not find the config file!")
-    time.sleep(5)
-    exit()
-
-try:
-    if(config_file == "PL"):
-        os.chdir(root_path)
-        os.chdir(app_root_path)
-        os.chdir(languages_folder)
-        os.chdir(languagePL)
+    os.chdir(root_path)
+    os.chdir(app_root_path)
+    os.chdir(languages_folder)
+    os.chdir(config_file)
 except FileNotFoundError:
     print("could not find the config file!")
     time.sleep(5)
