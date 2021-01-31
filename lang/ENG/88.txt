@@ -1,1 +1,1 @@
-Selected to compress.\nEnter the input file
+Selected to compress. Enter the input file

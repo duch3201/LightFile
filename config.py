@@ -13,4 +13,3 @@ if(config1 == "ENG"):
 if(config1 == "PL"):
     config_languages.write("PL")
 
-#oh god how the f*** did that work?

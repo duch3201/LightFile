@@ -139,7 +139,7 @@ def main():
         elif (option == "decompress" or option == 'd' or option == "D"):
             os.system('python "' + fpath + '\\' + 'decomrfile.py"')
             keepLooping = False
-        elif (option == "easteregg" or option =='n' or option == 'N'):
+        elif (option == "ver" or option =='v' or option == 'V'):
             print("LightFile.\n LightFile version", fileversion, "\n") 
         else:
             print("Invalid option! Please try again.")

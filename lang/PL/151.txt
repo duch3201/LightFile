@@ -1,1 +1,1 @@
-czy chcesz usunąć oryginalny plik?
+czy chcesz usunać oryginalny plik? (Y/N)
