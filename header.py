@@ -124,7 +124,7 @@ def main():
 
     fpath = getPath(fpath)
         
-    fileversion = "beta 1.0" 
+    fileversion = "beta 1.1.0 codename blueberry " 
     
     keepLooping = True
     

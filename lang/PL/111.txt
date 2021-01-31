@@ -1,0 +1,1 @@
+Katalog: {0} nie istnieje! 
