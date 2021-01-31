@@ -79,6 +79,7 @@ def getFileNameFromPath(s):
     
     return filename
 
+#----|variables|----
 File_ext = ".lfc"
 chunksize = 1024
 root_path = '/'
@@ -91,6 +92,11 @@ app_root_path = getPath(abspath(getsourcefile(lambda:0)))
 os.chdir(app_root_path)
 os.chdir("config")
 config_file = open ("languages.txt", 'r').read()
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
 
 #----|ARDT config file check|----
 try:
@@ -118,9 +124,6 @@ except FileNotFoundError:
 #for some reason python is skipping the ARDT config file check. Too bad!
 
 testtesttest = os.listdir()
-print(testtesttest)
-
-print(app_root_path + "/" + languages_folder+ "/" + languagePL)
 
 try:
     #----|ARDT language Read to memory... thingy|----
@@ -136,7 +139,6 @@ try:
     line151 = open("151.txt", 'r')
     line181 = open("181.txt", 'r')
     line194 = open("194.txt", 'r')
-    line212 = open("212.txt", 'r')
 except FileNotFoundError:
     print("could not find translation files!" '\n' "error: 12")
     time.sleep(5)
@@ -208,6 +210,9 @@ try:
     compressed_data = zlib.compress(str, 9)
 except FutureWarning:
     print("an unknown error accured" '\n' "error: 5")
+    exit()
+
+
 #change to the output location
 
 did_compress = True
@@ -268,38 +273,34 @@ history.close()
 
 #delete the file if the user wants.
 
-if(len(sys.argv) == 1):
-    print(line151.read())
-    line151.close()
-    delfile = input(": ")
-else:
-    delfile = "n"
-    did_delete_file = False
+try:
 
-if (delfile == "yes" or delfile == 'y' or delfile == "Y"):
-    os.chdir(output_path)
-    os.remove(file_name)
-    did_delete_file = True
+    if(len(sys.argv) == 1):
+        print(line151.read())
+        line151.close()
+        delfile = input(": ")
+    else:
+        delfile = "n"
+        did_delete_file = False
+
+    if (delfile == "yes" or delfile == 'y' or delfile == "Y"):
+        os.chdir(output_path)
+        os.remove(file_name)
+        did_delete_file = True
+except PermissionError:
+    print("sorry but you don't have permission to delete this file!" )
+    time.sleep(2)
+    print("compression successful app will close in 10 sec")
+    time.sleep(10)
+    exit()
+
 
 # print elapsed time
 elapsed_time = time.time() - start_time
 print(line181.read(), round(elapsed_time),"sec" )
 line181.close()
 
-#get path for the documents folder
-os.path.expanduser(documents)
-os.chdir(documents_path)
-if(path.exist(documents_path + "LightFileLogs")):
-    #enter the directory
-    os.chdir("lightFileLogs")
-    logfile = logging.basicConfig(filename="logfilename.log", level=logging.INFO)
-    logfilesave = open("latest.txt", 'rw')
-else:
-    #create the directory for logs
-    mkdir("LightFileLogs")
-    os.chdir("lightFileLogs")
-    logging.basicConfig(filename="logfilename.log", level=logging.INFO)
-    logfilesave = open("latest.txt", 'rw')
+
 
 
 #wait 10 seconds and close if not run by commandline
@@ -307,6 +308,7 @@ else:
 if(len(sys.argv) == 1):
     print("compression successful app will close in 10 sec")
     time.sleep(10)
+    exit()
 
 
 #EOF
