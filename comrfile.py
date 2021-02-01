@@ -88,6 +88,8 @@ File_ext = ".lfc"
 chunksize = 1024
 root_path = '/'
 languages_folder = "lang"
+global str
+qwerty = " "
 
 #----|ARDT|----
 app_root_path = getPath(abspath(getsourcefile(lambda:0)))
@@ -102,7 +104,7 @@ try:
     os.chdir(languages_folder)
     os.chdir(config_file)
 except FileNotFoundError:
-    print("could not find the config file!")
+    print("could not find the config file!" '\n' "error: 7" )
     time.sleep(5)
     exit()
 
@@ -112,18 +114,18 @@ testtesttest = os.listdir()
 
 try:
     #----|ARDT language Read to memory... thingy|----
-    line88 = open("88.txt", 'r')
-    line90 = open("90.txt", 'r')
-    line111 = open("111.txt", 'r')
-    line114 = open("114.txt", 'r')
-    line117 = open("117.txt", 'r')
-    line125 = open("125.txt", 'r') 
-    line129 = open("129.txt", 'r')
-    line140 = open("140.txt", 'r')
-    line145 = open("145.txt", 'r')
-    line151 = open("151.txt", 'r')
-    line181 = open("181.txt", 'r')
-    line194 = open("194.txt", 'r')
+    line88 = open("88.txt", 'r', encoding="utf8")
+    line90 = open("90.txt", 'r', encoding="utf8")
+    line111 = open("111.txt", 'r', encoding="utf8")
+    line114 = open("114.txt", 'r', encoding="utf8")
+    line117 = open("117.txt", 'r', encoding="utf8")
+    line125 = open("125.txt", 'r', encoding="utf8") 
+    line129 = open("129.txt", 'r', encoding="utf8")
+    line140 = open("140.txt", 'r', encoding="utf8")
+    line145 = open("145.txt", 'r', encoding="utf8")
+    line151 = open("151.txt", 'r', encoding="utf8")
+    line181 = open("181.txt", 'r', encoding="utf8")
+    line194 = open("194.txt", 'r', encoding="utf8")
 except FileNotFoundError:
     print("could not find translation files!" '\n' "error: 12")
     time.sleep(5)
@@ -177,7 +179,7 @@ except PermissionError:
 #read the file
 
 try:
-  fileforcompressionthread = mt._start_new_thread(str = open(file_name, 'rb').read() ("thead-1") )  
+  fileforcompressionthread = mt._start_new_thread(qwerty == open(file_name, 'r', encoding="utf8", errors="ignore").read() ("thread-1") )  
   fileforcompressionthread.start()
 
 except FileNotFoundError:
@@ -186,19 +188,17 @@ except FileNotFoundError:
     print("error: 1")
     time.sleep(5)
     exit()
-except:
-    print("unable to start thread!" '\n' "Error: 5" )
-    time.sleep(5)
+
     
 
 #somewhere here i noticed a memory leak, Too Bad!
 
 start_time = time.time()
 
-print("raw size:", sys.getsizeof(str))
+print("raw size:", sys.getsizeof(qwerty))
 
 try:
-   threadforcompressing = mt._start_new_thread (compressed_data = zlib.compress(str, 9) ) 
+   threadforcompressing = mt._start_new_thread ('compressed_data' == zlib.compress(qwerty, 9) ) 
    threadforcompressing.start()
 except FutureWarning:
     print("an unknown error accured" '\n' "error: 6")
@@ -207,16 +207,13 @@ except FutureWarning:
 
 
 #change to the output location
-
-did_compress = True
-
 os.chdir(root_path)
 os.chdir(output_path)
 
 print(line140.read(), sys.getsizeof(compressed_data))
 line140.close()
-#ask for name if not automated
 
+#ask for name if not automated
 if(len(sys.argv) == 1):
     print(line145.read()) #if it's blank simply default it to compressed.lfc
     new_compr_fn = input(": ")
@@ -247,9 +244,6 @@ except FileExistsError:
         savecomp = open(new_compr_fn + File_ext, 'wb')
         savecomp.write(compressed_data)
         savecomp.close()
-
-did_save_compressed_file = True
-
 
 #history file
 histfileopn = "history.lfh"
@@ -302,6 +296,11 @@ if(len(sys.argv) == 1):
     print("compression successful app will close in 10 sec")
     time.sleep(10)
     exit()
+
+fileforcompressionthread.close()
+threadforcompressing.close()
+
+
 
 
 #EOF
