@@ -18,5 +18,5 @@ right now i am working on
 
 - chunk file reading
 - logging
-- and a GUI
-
+- GUI
+- Multithreading
