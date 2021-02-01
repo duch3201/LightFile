@@ -6,12 +6,13 @@ from datetime import datetime
 import ctypes
 from inspect import getsourcefile
 from os.path import abspath
+import threading as mt
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile") #this is for the window title
 #takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and removes the file name (in this case, C:/Users/JohnDoe/Desktop)
 
 #-----|LightFile|-----
-#codename: blueberry
-#version 1.1 beta
+#codename: cheetah
+#version 1.2.0 beta
 
 
 def getPath(s):
@@ -78,6 +79,9 @@ def getFileNameFromPath(s):
     
     
     return filename
+
+
+
 
 #----|variables|----
 File_ext = ".lfc"
@@ -154,32 +158,38 @@ try:
 except FileNotFoundError:
     print("Directory: {0} does not exist!".format(path))
     line111.close()
-    time.sleep(10)
+    time.sleep(5)
     print("error: 2")
     exit()
 except NotADirectoryError:
     print("{0} is not a directory!".format(path))
     line114.close()
-    time.sleep(10)
+    time.sleep(5)
     print("error: 3")
     exit()
 except PermissionError:
     print("You do not have permissions to change to {0}".format(path))
     line117.close()
-    time.sleep(10)
+    time.sleep(5)
     print("error: 4")
     exit()
 
 #read the file
 
 try:
-    str = open(file_name, 'rb').read()
+  fileforcompressionthread = mt._start_new_thread(str = open(file_name, 'rb').read() ("thead-1") )  
+  fileforcompressionthread.start()
 
 except FileNotFoundError:
     logging.critical('This file does not exist!')
     print("This file does not exist!")
     print("error: 1")
+    time.sleep(5)
     exit()
+except:
+    print("unable to start thread!" '\n' "Error: 5" )
+    time.sleep(5)
+    
 
 #somewhere here i noticed a memory leak, Too Bad!
 
@@ -188,9 +198,11 @@ start_time = time.time()
 print("raw size:", sys.getsizeof(str))
 
 try:
-    compressed_data = zlib.compress(str, 9)
+   threadforcompressing = mt._start_new_thread (compressed_data = zlib.compress(str, 9) ) 
+   threadforcompressing.start()
 except FutureWarning:
-    print("an unknown error accured" '\n' "error: 5")
+    print("an unknown error accured" '\n' "error: 6")
+    time.sleep(5)
     exit()
 
 
