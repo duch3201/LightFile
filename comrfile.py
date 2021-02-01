@@ -92,11 +92,6 @@ app_root_path = getPath(abspath(getsourcefile(lambda:0)))
 os.chdir(app_root_path)
 os.chdir("config")
 config_file = open ("languages.txt", 'r').read()
-<<<<<<< Updated upstream
-=======
-
-
->>>>>>> Stashed changes
 
 #----|ARDT config file check|----
 try:
