@@ -88,7 +88,6 @@ File_ext = ".lfc"
 chunksize = 1024
 root_path = '/'
 languages_folder = "lang"
-global str
 qwerty = " "
 
 #----|ARDT|----
@@ -106,11 +105,10 @@ try:
 except FileNotFoundError:
     print("could not find the config file!" '\n' "error: 7" )
     time.sleep(5)
-    exit()
+    
 
-#for some reason python is skipping the ARDT config file check. Too bad!
 
-testtesttest = os.listdir()
+
 
 try:
     #----|ARDT language Read to memory... thingy|----
@@ -229,7 +227,7 @@ try:
     createfile = open(new_compr_fn + File_ext, 'w')
     createfile.close()
 except FileExistsError:
-    print("a file with the same name already exists in this directory!" '\n' "are you sure you don't want to rename the file? (Y/N)")
+    print("a file with the same name already exists in this directory!" '\n' "are you sure you want to overwrite the file? (Y/N)")
     rusure = input(": ")
     if (rusure == "yes" or rusure == 'y' or rusure == "Y" ):
         new_compr_fn = input("enter the new file name" '\n' ": ")

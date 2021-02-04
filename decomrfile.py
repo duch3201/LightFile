@@ -75,11 +75,52 @@ def getFileNameFromPath(s):
     
     return filename
 
+#----|variables|----
 root_path = '/'
+languages_folder = "lang"
+
+#----|ARDT|----
+app_root_path = getPath(abspath(getsourcefile(lambda:0)))
+os.chdir(app_root_path)
+os.chdir("config")
+config_file = open ("languages.txt", 'r').read()
+
+#----|ARDT config file check|----
+try:
+    os.chdir(root_path)
+    os.chdir(app_root_path)
+    os.chdir(languages_folder)
+    os.chdir(config_file)
+except FileNotFoundError:
+    print("could not find the config file!" '\n' "error: 7" )
+    time.sleep(5)
+    
+#----|ARDT Language load|----
+try:
+    #----|ARDT language Read to memory... thingy|----
+    line88 = open("88.txt", 'r', encoding="utf8")
+    line90 = open("90.txt", 'r', encoding="utf8")
+    line125 = open("125.txt", 'r', encoding="utf8") 
+    line129 = open("129.txt", 'r', encoding="utf8")
+    line140 = open("140.txt", 'r', encoding="utf8")
+    line145 = open("145.txt", 'r', encoding="utf8")
+    line151 = open("151.txt", 'r', encoding="utf8")
+    line181 = open("181.txt", 'r', encoding="utf8")
+    line194 = open("194.txt", 'r', encoding="utf8")
+except FileNotFoundError:
+    print("could not find translation files!" '\n' "error: 12")
+    time.sleep(5)
+    exit()
+
+
+
+root_path = '/'
+
+
 if(len(sys.argv) == 1):
-    print("Selected to decompress.\nEnter the input file")
+    print(line88.read())
     path_total = input(": ")
-    print("Enter the path to the output folder")
+    print(line90.read())
     output_path = input (": ")
 else:
     path_total = sys.argv[1]
@@ -110,11 +151,11 @@ except FileNotFoundError:
 
 
 #decompress
-print("compressed size:", sys.getsizeof(str))
+print(line129.read(), sys.getsizeof(str))
 
 decompressed_data = zlib.decompress(str)
 
-print("decomppresed size:", sys.getsizeof(decompressed_data))
+print(line140.read(), sys.getsizeof(decompressed_data))
 
 #change to output directory
 
@@ -124,17 +165,17 @@ os.chdir(output_path)
 #get new filename
 
 if(len(sys.argv) == 1):
-    print("Insert the new decompressed file name")
+    print(line145.read())
     file_newname = input(": ")
 else:
     file_newname = getFileNameFromPath(sys.argv[2])
 
 #open the history file
 
-app_root_path =  getPath(abspath(getsourcefile(lambda:0)))
-os.chdir(app_root_path) 
-with open('history.lfh') as f:
-    mylist = list(f)
+#app_root_path =  getPath(abspath(getsourcefile(lambda:0)))
+#os.chdir(app_root_path) 
+#with open('history.lfh') as f:
+ #   mylist = list(f)
 
 #change to the output directory
 
@@ -148,9 +189,9 @@ if(file_newname == ""):
 
 #delete the history file
 
-os.chdir(app_root_path)
-os.remove("history.lfh")
-os.chdir(output_path)
+#os.chdir(app_root_path)
+#os.remove("history.lfh")
+#os.chdir(output_path)
 
 #create the file and write to it
 
@@ -163,7 +204,7 @@ savedecomp.close()
 #check if the user wants to delete the compressed file
 
 if(len(sys.argv) == 1):
-    print("do you want to delete the compressed file")
+    print(line151.read())
 
     delfile = input(": ")
 else:
@@ -176,10 +217,10 @@ if (delfile == "yes" or delfile == 'y' or delfile == "Y"):
 #get the elapsed time and print it
 
 time_elapsed = time.time() - time_start
-print("decompression only took:", round(time_elapsed), "sec")
+print(line181.read(), round(time_elapsed), "sec")
 
 #wait 10 seconds and close
 
 if(len(sys.argv) == 1):
-    print("decompression successful! app wil close in 10 sec")
+    print(line194.read())
     time.sleep(10)

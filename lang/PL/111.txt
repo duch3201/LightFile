@@ -1,1 +1,1 @@
-Katalog: {0} nie istnieje! 
+Ten folder nie istnieje! 
