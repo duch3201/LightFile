@@ -9,7 +9,7 @@ https://trello.com/b/HaC2BQJz/lightfile link to a trello board
 
 ***
 ## Features
-- eazy translations
+- easy translations
 - can compress files to half of the original size
 - able to compress and decompress files very quicly
 
