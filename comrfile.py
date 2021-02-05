@@ -106,6 +106,13 @@ class CouldNotStartThread(Exception):
             time.sleep(5)
             exit()
 
+class UnknownCommand(Exception):
+    def __init__(self):
+        if(didcollectuserinput == False):
+            print("Unknown command, application halted!")
+            time.sleep(5)
+            exit()
+
 #----|variables|----
 File_ext = ".lfc"
 chunksize = 1024
@@ -152,16 +159,21 @@ except FileNotFoundError:
     raise CouldNotFindTranslationFiles
 
 #if no extra arguments give the standard selection
-if(len(sys.argv) == 1):
-    print(line88.read())
-    line88.close()
-    path_total = input(": ")
-    print(line90.read())
-    line90.close()
-    output_path = input (": ")
-else:
-    path_total = sys.argv[1]
-    output_path = getPath(sys.argv[2])
+try:
+    if(len(sys.argv) == 1):
+        print(line88.read())
+        line88.close()
+        path_total = input(": ")
+        print(line90.read())
+        line90.close()
+        output_path = input (": ")
+    else:
+        path_total = sys.argv[1]
+        output_path = getPath(sys.argv[2])
+except:
+    didcollectuserinput = False
+    raise UnknownCommand
+
 
 path = getPath(path_total)
 file_name = getFileNameFromPath(path_total)
