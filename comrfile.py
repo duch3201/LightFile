@@ -81,7 +81,30 @@ def getFileNameFromPath(s):
     return filename
 
 
+#exceptions classes
+class CouldNotFindTranslationFiles(Exception):
+    def __init__(self):
+        print("an exception has accured!")
+        if(didfindtranslationfiles == False):
+            print("could not find translation files!" '\n' "error: 12")
+            time.sleep(5)
+            exit()
+        
+class CouldnotFindConfigFile(Exception):
+    def __init__(self):
+        print("an exception has accured!")
+        if (didfindconfigfile == False):
+            print("could not find the config file!" '\n' "error: 7")
+            time.sleep(5)
+            #exit()
 
+class CouldNotStartThread(Exception):
+    def __init__(self):
+        print("an exception has accured!")
+        if (didstarthread == False):
+            print("could not start a new thread!" '\n' "error: 8")
+            time.sleep(5)
+            exit()
 
 #----|variables|----
 File_ext = ".lfc"
@@ -95,6 +118,7 @@ app_root_path = getPath(abspath(getsourcefile(lambda:0)))
 os.chdir(app_root_path)
 os.chdir("config")
 config_file = open ("languages.txt", 'r').read()
+os.chdir(root_path)
 
 #----|ARDT config file check|----
 try:
@@ -103,9 +127,8 @@ try:
     os.chdir(languages_folder)
     os.chdir(config_file)
 except FileNotFoundError:
-    print("could not find the config file!" '\n' "error: 7" )
-    time.sleep(5)
-    
+    didfindconfigfile = False
+    raise CouldnotFindConfigFile
 
 
 
@@ -125,9 +148,8 @@ try:
     line181 = open("181.txt", 'r', encoding="utf8")
     line194 = open("194.txt", 'r', encoding="utf8")
 except FileNotFoundError:
-    print("could not find translation files!" '\n' "error: 12")
-    time.sleep(5)
-    exit()
+    foundtranslationfiles = False
+    raise CouldNotFindTranslationFiles
 
 #if no extra arguments give the standard selection
 if(len(sys.argv) == 1):
@@ -144,8 +166,7 @@ else:
 path = getPath(path_total)
 file_name = getFileNameFromPath(path_total)
     
-did_find_file = True
-file_found_time = datetime.now
+
 
 #change to the system root path
 
@@ -177,7 +198,7 @@ except PermissionError:
 #read the file
 
 try:
-  fileforcompressionthread = mt._start_new_thread(qwerty == open(file_name, 'r', encoding="utf8", errors="ignore").read() ("thread-1") )  
+  fileforcompressionthread = mt._start_new_thread(str == open(file_name, 'rb').read() ("thread-1") )  
   fileforcompressionthread.start()
 
 except FileNotFoundError:
@@ -186,7 +207,9 @@ except FileNotFoundError:
     print("error: 1")
     time.sleep(5)
     exit()
-
+except CouldNotStartThread:
+    didstarthread = False
+    raise CouldNotStartThread
     
 
 #somewhere here i noticed a memory leak, Too Bad!
@@ -196,7 +219,7 @@ start_time = time.time()
 print("raw size:", sys.getsizeof(qwerty))
 
 try:
-   threadforcompressing = mt._start_new_thread ('compressed_data' == zlib.compress(qwerty, 9) ) 
+   threadforcompressing = mt._start_new_thread ('compressed_data' == zlib.compress(str, 9) ) 
    threadforcompressing.start()
 except FutureWarning:
     print("an unknown error accured" '\n' "error: 6")
@@ -231,17 +254,35 @@ except FileExistsError:
     rusure = input(": ")
     if (rusure == "yes" or rusure == 'y' or rusure == "Y" ):
         new_compr_fn = input("enter the new file name" '\n' ": ")
-        createfile = open(new_compr_fn + File_ext, 'w')
-        createfile.close()
-        savecomp = open(new_compr_fn + File_ext, 'wb')
-        savecomp.write(compressed_data)
-        savecomp.close()
-    elif (rusure == "no" or rsure == 'n' or rusure == "N"):
-        createfile = open(new_compr_fn + File_ext, 'w')
-        createfile.close()
-        savecomp = open(new_compr_fn + File_ext, 'wb')
-        savecomp.write(compressed_data)
-        savecomp.close()
+        try:
+            createfile = open(new_compr_fn + File_ext, 'w')
+            createfile.close()
+            savecomp = open(new_compr_fn + File_ext, 'wb')
+            savecomp.write(compressed_data)
+            savecomp.close()
+        except PermissionError:
+            print("you do not have permission to create a file!")
+            print("error: 6")
+            time.sleep(5)
+            exit() 
+
+
+
+    elif (rusure == "no" or rusure == 'n' or rusure == "N"):
+        try:
+            createfile = open(new_compr_fn + File_ext, 'w')
+            createfile.close()
+            savecomp = open(new_compr_fn + File_ext, 'wb')
+            savecomp.write(compressed_data)
+            savecomp.close()
+        except PermissionError:
+            print("you do not have permission to create a file!")
+            print("error: 6")
+            time.sleep(5)
+            exit()
+
+
+
 
 #history file
 histfileopn = "history.lfh"

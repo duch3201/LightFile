@@ -137,10 +137,16 @@ try:
     os.chdir(path)
 except FileNotFoundError:
     print("Directory: {0} does not exist!".format(path))
+    time.sleep(5)
+    exit()
 except NotADirectoryError:
     print("{0} is not a directory!".format(path))
+    time.sleep(5)
+    exit()
 except PermissionError:
     print("You do not have permissions to change to {0}".format(path))
+    time.sleep(5)
+    exit()
 
 #open the file
 time_start = time.time()
@@ -148,7 +154,9 @@ try:
     str = open(file_name, 'rb').read()
 except FileNotFoundError:
   print("This file does not exist!")
-
+  print("error: 1")
+  time.sleep(5)
+  exit()
 
 #decompress
 print(line129.read(), sys.getsizeof(str))
@@ -172,10 +180,10 @@ else:
 
 #open the history file
 
-#app_root_path =  getPath(abspath(getsourcefile(lambda:0)))
-#os.chdir(app_root_path) 
-#with open('history.lfh') as f:
- #   mylist = list(f)
+app_root_path =  getPath(abspath(getsourcefile(lambda:0)))
+os.chdir(app_root_path) 
+with open('history.lfh') as f:
+    mylist = list(f)
 
 #change to the output directory
 
