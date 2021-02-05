@@ -1,7 +1,7 @@
 # LightFile, A compression app written in python
 
 
-Note2. This app requires that python is installed
+Note. This app requires that python is installed
 
 the app is in beta 1.1
 
