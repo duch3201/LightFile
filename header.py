@@ -3,145 +3,181 @@ from os import path
 import time
 import ctypes
 import sys
+import zlib
 import getopt
-from inspect import getsourcefile
-from os.path import abspath
-ctypes.windll.kernel32.SetConsoleTitleW("LightFile")#this is for the window title
+
+#############################################################################
+#                                                                           #
+#                                                                           #
+#                               LIGHTFILE                                   #
+#                                                                           #
+#                                                                           #
+#############################################################################
 
 
-def getPath(s):
+ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # window title
 
-    #reverse string
+#main variables
+
+input_file_path = ""     # name and path of the input file
+output_file_path = ""    # name and path of the output file
+operation = 0            # the operation, be 0 to compress or 1 to decompress.
+
+#file variables
+compressed_ext = ".lfc"
+input_file = ""
+output_file = ""
+
+#keywords to be detected in the getOp() function
+
+validCompressionSelectors =   ["c", "compress", "compression"]
+validDecompressionSelectors = ["d", "decompress", "decompression"]
+
+#checks if the argument op is a valid operation selector and returns accordingly
+#if not valid raises a ValueError exception
+
+def getOp(op):
+
     
-    reversedstr = ""
+    #first loop through the compression selector list
+    for selector in validCompressionSelectors:
+        if (op.lower() == selector):
+            return 0
 
-    for c in reversed(s):
-        reversedstr = reversedstr + c
-
-    #remove the rest of the path, leaving only the file name
-
-    tempfn = ""
-    shouldAdd = False
+    #then loop through the decompression selector list
     
-    for c in reversedstr:
-        if(shouldAdd == True):
-            tempfn = tempfn + c
-        if(c == '\\' or c == '/'):
-            shouldAdd = True
+    for selector in validDecompressionSelectors:
+        if (op.lower() == selector):
+            return 1
+
+    #if we reach here, it is not a valid operation selector
+    #so raise a ValueError exception
+    
+    raise ValueError("Not a valid operaton!")
+
+#puts the appropriate values in the main variables
+#from the arguments passed to lightfile in a commandline
+
+def doAutomation():
+    
+    return
+
+#puts the appropriate vavlues in the main variables
+#by getting them from the user and 
         
-        
+def doUserInput():
+    #clean the screen since we are gonna get
+    #the input from the player and
+    #it will be cleaner that way
 
-    #reverse the file name to make it valid again
-
-    filename = ""
-    
-    for c in reversed(tempfn):
-        filename = filename + c
-    
-    
-    return filename
-
-def handleArguments():
-    
-    if getattr(sys, 'frozen', False):
-        fpath = os.path.dirname(sys.executable)
-    else:
-        fpath = getattr(sys, '_MEIPASS', path.abspath(path.dirname(__file__)))
-
-    
-    opts, args = getopt.getopt(sys.argv[1:], "hc:d:o:") #get the arguments and sort them out with getopt
-    
-    cmpOrDcmp = ""
-    outputfile = ""
-    inputfile = ""
-
-    #loop through every option and check them
-    
-    for opts, args in opts:
-        if opts in("-c", "-d"):
-            cmpOrDcmp = opts
-            inputfile = args
-        elif(opts == "-o"):
-            outputfile = args
-        elif(opts == "-h"):
-            print("lightfile -c (-d for decompression) <input file>  -o <output file>")
-            sys.exit()
-        else:
-            print("Unknown argument: " + opts)
-            sys.exit()
-
-    #check if inputs were valid
-    
-    if(inputfile == ""):
-        print("No input file selected!")
-        sys.exit()
-
-    if(outputfile == ""):
-        print("No output file selected!")
-        sys.exit()
-
-    if(cmpOrDcmp == ""):
-        print("No operation selected!")
-
-
-    #check if there is a \ or an / on the files and work accordingly
-
-    if not ("\\" in inputfile or "/" in inputfile):
-        inputfile = os.getcwd().replace("\\", "/") + "/" + inputfile
-
-    if not ("\\" in outputfile or "/" in outputfile):
-        outputfile = os.getcwd().replace("\\", "/") + "/" + outputfile
-        
-
-    #call the files
-        
-    if(cmpOrDcmp == "-c"):
-        os.system('python "' + fpath + '\\' + 'comrfile.py" '   + inputfile + " " + outputfile)
-    else:
-        os.system('python "' + fpath + '\\' + 'decomrfile.py" ' + inputfile + " " + outputfile)
-    sys.exit()
-    
-    
-def main():
-
-    #if there are any commandline arguments then use the handleArguments() function
-    
-    if(len(sys.argv) > 1):
-        handleArguments()
-
-    #clear the screen
-    
     os.system('cls||clear')
     
-    print("compress(c) a file, or decompress(d) a file")
-
-    #check if it is running in a pyInstaller bundle and get the path to the executable in the appropriate way
+    #first off all get the operation
+    #using the getOp() function to check if the user input is valid
+    #and keep on asking the user until it is fully valid
     
-    if getattr(sys, 'frozen', False):
-        fpath = sys.executable
-    else:
-        fpath = getattr(sys, '_MEIPASS', __file__)
-
-    fpath = getPath(fpath)
-        
-    fileversion = "beta 1.2.0 codename cheetah " 
-    
-    keepLooping = True
-    
-    while keepLooping == True:
-        option = input(": ")
-
-        #check if the user has selected to compress or decompress and call the according file to it.
-        
-        if (option == "compress" or option == 'c' or option == "C" ):
-            os.system('python "' + fpath + '\\' + 'comrfile.py"')
-            keepLooping = False
-        elif (option == "decompress" or option == 'd' or option == "D"):
-            os.system('python "' + fpath + '\\' + 'decomrfile.py"')
-            keepLooping = False
-        elif (option == "ver" or option =='v' or option == 'V'):
-            print("LightFile.\n LightFile version", fileversion, "\n") 
+    print("(C)ompression or (D)ecompression")
+    gettingOp = True
+    while (gettingOp == True):
+        try:
+            global operation
+            operation = getOp(input(": "))
+        except ValueError as noOp:
+            print(noOp)
         else:
-            print("Invalid option! Please try again.")
+            gettingOp = False
 
-main()
+    #now we will get the total file path from the user
+
+    print("Insert the input file (example C:\\ExampleFolder\\ExampleFile.txt)")
+
+    global input_file_path
+    
+    input_file_path = input(": ")
+
+    #now get the output file path and name
+
+    print("Insert the output file path and name (example C:\\ExampleFolder\\ExampleOutputFile)")
+
+    global output_file_path
+    
+    output_file_path = input(": ")
+
+    #now we already have enough information to continue, so return
+
+# takes a path to the file to be compressed
+# and returns the compressed data
+
+def compressFile(path):
+
+    return zlib.compress(open(path, "rb").read())
+
+
+
+# takes a path to the file to be decompressed
+# and returns the decompressed data
+
+def decompressFile(path):
+    
+    return zlib.decompress(open(path, "rb").read())
+
+# saves the data in the data variable in a file
+# in which the path points to
+
+def saveData(data, path):
+    file = open(path, "wb")
+    file.write(data)
+    file.flush()
+    file.close()
+    
+
+#######################################
+
+#check if there are any arguments
+#if there are, get the information from the arguments
+#otherwise go with the user input inside the app
+
+if(len(sys.argv) > 1):
+    doAutomation()
+else:
+    doUserInput()
+
+#now check whether we are compressing or decompressing
+#and write to the buffer accordingly
+
+operation_data = ""
+
+start_time = time.time() # time so we can get the elapsed seconds later 
+
+try:
+    if(operation == 0):
+        operation_data = compressFile(input_file_path)
+    else:
+        operation_data = decompressFile(input_file_path)
+
+except zlib.error:
+    print("An error occured with the selected operation!")
+    exit()
+except FileNotFoundError:
+    print("The file {0} doesn't exist!".format(input_file_path))
+    exit()
+    #TODO add more exceptions
+    
+# now that we have the data, save it into a file
+# and add the file extension depending on if we are
+# compressing or not
+
+if(operation == 0):
+    output_file_path = output_file_path + compressed_ext
+
+#TODO EXCEPTIONS
+
+saveData(operation_data, output_file_path)
+
+
+
+
+
+#print the elapsed time rounded to two decimal points in second
+
+print("Elapsed time: {0} seconds".format(round(time.time() - start_time, 2)))
