@@ -24,6 +24,7 @@ output_file_path = ""    # name and path of the output file
 operation = 0            # the operation, be 0 to compress or 1 to decompress.
 
 #file variables
+chunk_size = 32768
 compressed_ext = ".lfc"
 input_file = ""
 output_file = ""
@@ -67,7 +68,7 @@ def doAutomation():
         
 def doUserInput():
     #clean the screen since we are gonna get
-    #the input from the player and
+    #the input from the user and
     #it will be cleaner that way
 
     os.system('cls||clear')
@@ -105,30 +106,89 @@ def doUserInput():
 
     #now we already have enough information to continue, so return
 
-# takes a path to the file to be compressed
-# and returns the compressed data
-
-def compressFile(path):
-
-    return zlib.compress(open(path, "rb").read())
+# takes a path to the file to be compressed and the output file
+# compresses the file in chunks and then appends the data to the
+# output file
 
 
+def compressFile(inpath, outpath):
 
-# takes a path to the file to be decompressed
-# and returns the decompressed data
-
-def decompressFile(path):
+    cmpr = zlib.compressobj()
+    try:
+        outfile = open(outpath + compressed_ext, "w")
+        infile  = open(inpath, "rb")
+    except FileNotFoundError:
+        print("File {0} does not exist!".format(inpath))
+        exit()
     
-    return zlib.decompress(open(path, "rb").read())
+    #empty the output file and close it to be reopened in a new mode
+    
+    outfile.write("")
+    outfile.close()
 
-# saves the data in the data variable in a file
-# in which the path points to
+    #reopen it in append mode
 
-def saveData(data, path):
-    file = open(path, "wb")
-    file.write(data)
-    file.flush()
-    file.close()
+    outfile = open(outpath + compressed_ext, "ab")
+    
+    
+    #read the first chunk
+
+    data = infile.read(chunk_size)
+
+    #loop through every chunk, compressing and flushing into the file
+    #every loop until the entire file was read
+    
+    while data:
+        outfile.write(cmpr.compress(data))
+        outfile.flush()
+        data = infile.read(chunk_size)
+
+    #write the last bits to the file and close it
+
+    outfile.write(cmpr.flush())
+    outfile.close()
+
+
+# takes a path to the file to be decompressed and the output file
+# decompresses the file in chunks and then appends the data to the
+# output file
+
+def decompressFile(inpath, outpath):
+    
+    dcmpr = zlib.decompressobj()
+    try:
+        outfile = open(outpath, "w")
+        infile  = open(inpath, "rb")
+    except FileNotFoundError:
+        print("File {0} does not exist!".format(inpath))
+        exit()
+    
+    #empty the output file and close it to be reopened in a new mode
+    
+    outfile.write("")
+    outfile.close()
+
+    #reopen it in append mode
+
+    outfile = open(outpath, "ab")
+    
+    
+    #read the first chunk
+
+    data = infile.read(chunk_size)
+
+    #loop through every chunk, decompressing and flushing into the file
+    #every loop until the entire file was read
+    
+    while data:
+        outfile.write(dcmpr.decompress(data))
+        outfile.flush()
+        data = infile.read(chunk_size)
+        
+    #write the last bits to the file and close it
+    
+    outfile.write(dcmpr.flush())
+    outfile.close()
     
 
 #######################################
@@ -143,39 +203,14 @@ else:
     doUserInput()
 
 #now check whether we are compressing or decompressing
-#and write to the buffer accordingly
-
-operation_data = ""
+#and call the function accordingly
 
 start_time = time.time() # time so we can get the elapsed seconds later 
 
-try:
-    if(operation == 0):
-        operation_data = compressFile(input_file_path)
-    else:
-        operation_data = decompressFile(input_file_path)
-
-except zlib.error:
-    print("An error occured with the selected operation!")
-    exit()
-except FileNotFoundError:
-    print("The file {0} doesn't exist!".format(input_file_path))
-    exit()
-    #TODO add more exceptions
-    
-# now that we have the data, save it into a file
-# and add the file extension depending on if we are
-# compressing or not
-
 if(operation == 0):
-    output_file_path = output_file_path + compressed_ext
-
-#TODO EXCEPTIONS
-
-saveData(operation_data, output_file_path)
-
-
-
+    compressFile(input_file_path, output_file_path)
+else:
+    decompressFile(input_file_path, output_file_path)
 
 
 #print the elapsed time rounded to two decimal points in second
