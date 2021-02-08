@@ -15,6 +15,15 @@ import getopt
 #############################################################################
 
 
+################################################################
+#                   TODO:
+#
+#   Re-add config
+#   Re-add ARDT support (maybe even make it better?)
+#
+################################################################
+
+
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # window title
 
 #main variables
@@ -25,6 +34,7 @@ operation = 2            # the operation, be 0 to compress or 1 to decompress.
 compress_level = 6       # the bigger the more compressed, at the expense of time to compress
 
 #file variables
+history_file = "history.lfh"
 chunk_size = 32768
 compressed_ext = ".lfc"
 input_file = ""
@@ -305,6 +315,22 @@ def decompressFile(inpath, outpath):
 
 #######################################
 
+#get the path to the location of the main executable
+#depending on if we're executing through a .py file or through an executable 
+#we will have to use different methods to get it
+
+if getattr(sys, 'frozen', False): #PyInstaller Executable
+    exec_path = sys.executable
+else: # on a .py file
+    exec_path = getattr(sys, '_MEIPASS', __file__)
+
+#now get the path to the installation directory from the path to the main executable
+#and then create the path to the history file
+
+exec_path, exec_file_name = os.path.split(exec_path)
+
+history_path = exec_path + "\\" + history_file
+
 #check if there are any arguments
 #if there are, get the information from the arguments
 #otherwise go with the user input inside the app
@@ -321,6 +347,25 @@ start_time = time.time() # time so we can get the elapsed seconds later
 
 if(operation == 0):
     compressFile(input_file_path, output_file_path)
+    
+    #since we are doing compression,
+    #write the path to the history file
+    
+    try:
+        history_file = open(history_path, "w")
+    except:
+
+        #if not found print an error message and continue with executing the program
+        
+        print("an error occured while opening the history ({0}) file!".format(history_path))
+    else:
+
+        #write the path
+
+        history_file.write(input_file_path)
+        history_file.close()
+        
+        
 else:
     decompressFile(input_file_path, output_file_path)
 
