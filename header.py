@@ -21,7 +21,8 @@ ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # window title
 
 input_file_path = ""     # name and path of the input file
 output_file_path = ""    # name and path of the output file
-operation = 0            # the operation, be 0 to compress or 1 to decompress.
+operation = 2            # the operation, be 0 to compress or 1 to decompress.
+compress_level = 6       # the bigger the more compressed, at the expense of time to compress
 
 #file variables
 chunk_size = 32768
@@ -60,9 +61,119 @@ def getOp(op):
 #from the arguments passed to lightfile in a commandline
 
 def doAutomation():
-    
-    return
 
+    #get the arguments from the sys.argv array
+    #starting at 1 because the python file is considered
+    #kind of an argument so it would glitch it out
+
+    #options are as following
+    #-o is the output file. not strictly nescessary as it will be defaulted to the same as the input one if it doesn't exist
+    #-i is the input file. it is nescessary and the program should not run without it.
+    #-h is the help option. print out a help message and exit the program
+    #-L is the compression level option. not nescessary and will default to 6
+    #-c and -d are the operation options for compression and decompression. it is nescessary and the program should not run without it.
+
+    #set globals
+
+    global input_file_path
+    global output_file_path
+    global operation
+    global compress_level
+    
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "o:i:hL:cd")
+    except getopt.GetoptError as msg:
+        print(msg)
+        exit()
+
+    #loop through every option and do the checks
+
+    #TODO: better exception handling
+        
+    try:
+        for opt, arg in opts:
+            if opt == "-h":
+
+                #help message argument
+                #just print a help message and exit the program
+                
+                print("PLACEHOLDER") #TODO add the help message
+                exit()
+            if opt == "-L":
+
+                #compression levle argument
+                #check if it is a number and is inbetween 0 and 9
+                #if it is raise exceptions accordingly otherwise set the compress_level variable to the argument
+                
+                if(int(arg) > 9 or int(arg) < 0):
+                    raise ValueError("Value {0} for argument {1} is out of the accepted range.".format(arg, opt))
+                compress_level = int(arg)
+
+                
+            if opt == "-c":
+
+                #compress operation argument
+                #set operation to compress
+                
+                operation = 0
+            if opt == "-d":
+                
+                #decompress operation argument
+                #set operation to decompress
+                
+                operation = 1
+            if opt == "-i":
+
+                #input file argument
+                #set input_file_path to the path provided here
+
+                input_file_path = arg
+
+            if opt == "-o":
+
+                #output file argument
+                #set output_file_path to the path provided here
+
+                output_file_path = arg
+
+        #do a few checks on the data to see if it is valid
+        
+
+        #if no operation argument was provided, raise a ValueError exception
+        if(operation > 1):
+            raise ValueError("You need to select an operation argument!")
+
+        #if the input file path is empty, raise a ValueError exception
+        
+        if(input_file_path == ""):
+            raise ValueError("You need to select an input file!")
+
+        #if the output file path is empty, set it to the input file path
+
+        if(output_file_path == ""):
+            output_file_path = input_file_path
+
+        #if there is no '/' or '\' in the input file path then add the current path to it to make it a full path
+        #TODO make this better
+
+        current_path = os.getcwd()
+        
+        if "\\" not in input_file_path:
+            input_file_path = current_path + "\\" + input_file_path
+
+        #if there is no '/' or '\' in the input file path then add the current path to it to make it a full path
+        #TODO make this better
+
+        if "\\" not in output_file_path:
+            output_file_path = current_path + "\\" +output_file_path
+
+        
+    except ValueError as msg:
+        print(msg)
+        exit()
+
+        
+    
 #puts the appropriate vavlues in the main variables
 #by getting them from the user and 
         
@@ -112,8 +223,9 @@ def doUserInput():
 
 
 def compressFile(inpath, outpath):
+    
+    cmpr = zlib.compressobj(compress_level)
 
-    cmpr = zlib.compressobj()
     try:
         outfile = open(outpath + compressed_ext, "w")
         infile  = open(inpath, "rb")
