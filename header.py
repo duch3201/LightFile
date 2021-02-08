@@ -23,15 +23,15 @@ import getopt
 #
 ################################################################
 
-
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # window title
 
 #main variables
 
 input_file_path = ""     # name and path of the input file
 output_file_path = ""    # name and path of the output file
-operation = 2            # the operation, be 0 to compress or 1 to decompress.
+operation = 3            # the operation, be 0 to compress, 1 to decompress or 2 to configurate lightfile
 compress_level = 6       # the bigger the more compressed, at the expense of time to compress
+
 
 #file variables
 history_file = "history.lfh"
@@ -39,11 +39,27 @@ chunk_size = 32768
 compressed_ext = ".lfc"
 input_file = ""
 output_file = ""
+config_file_name = "config.cfg"
+config_file_path = ""
+
+
+#other variables
+
+light_file_version = "LightFile 1.2"
+
+#language variables
+
+language_file = "ENG"
+accepted_language_values = ["ENG", "PL", "POR"]
+language_list = "English(ENG), Polish(PL), Portuguese(POR)"
 
 #keywords to be detected in the getOp() function
 
+validConfigSelectors =        ["o", "config", "configuration"]
 validCompressionSelectors =   ["c", "compress", "compression"]
 validDecompressionSelectors = ["d", "decompress", "decompression"]
+
+###################
 
 #checks if the argument op is a valid operation selector and returns accordingly
 #if not valid raises a ValueError exception
@@ -61,11 +77,18 @@ def getOp(op):
     for selector in validDecompressionSelectors:
         if (op.lower() == selector):
             return 1
+    #and loop throug the configuration selector list
+    
+    for selector in validConfigSelectors:
+        if (op.lower() == selector):
+            return 2
 
     #if we reach here, it is not a valid operation selector
     #so raise a ValueError exception
     
     raise ValueError("Not a valid operaton!")
+
+#####################
 
 #puts the appropriate values in the main variables
 #from the arguments passed to lightfile in a commandline
@@ -150,7 +173,7 @@ def doAutomation():
         
 
         #if no operation argument was provided, raise a ValueError exception
-        if(operation > 1):
+        if(operation > 2):
             raise ValueError("You need to select an operation argument!")
 
         #if the input file path is empty, raise a ValueError exception
@@ -182,8 +205,160 @@ def doAutomation():
         print(msg)
         exit()
 
-        
+#################
+
+#prints the standard config option header and asks the user for an input,
+#returning the user input
+
+def standardConfigFunction(opt_name, opt_allowed_values, opt_current_value, opt_description):
+
+    #print the standard header for config files
     
+    os.system('cls||clear')
+    print("---------LIGHTFILE CONFIG---------\n\n")
+    
+    print("Selected Option: {0}".format(opt_name))
+    print("Allowed values: {0}".format(opt_allowed_values))
+    print("Current value: {0}".format(opt_current_value))
+    print("Description:\n")
+    print(opt_description)
+    # get the user input and return it
+    
+    return input("Insert a new value or keep empty if no changes need to be made: ")
+
+    
+#########################
+    
+#does the handling of the compression level config selection
+
+def config_level():
+
+    global compress_level
+
+    val = standardConfigFunction("Level", "0-9", compress_level, "The level of compression to be used. Higher values have better compression at the expensive of taking more time to compress\n0 is no compression and 9 is max compression")
+    
+
+    #check the values to see if it's empty or is an invalid value
+    
+    if(val == ""):
+        return
+    else:
+        try:
+            val = int(val)
+            if val < 0 or val > 9:
+                #the user put in an invalid value. simply return
+                return
+            compress_level = int(val)
+        except ValueError:
+            #uh oh! the user probably put a letter here. let's not change the compress level
+            return
+
+############################
+
+#does the handling of the language config selection
+
+
+
+def config_language():
+
+    global language_file
+
+    val = standardConfigFunction("Language", accepted_language_values, language_file, "The language that will be used.\nA restart is required for changes to appear.\n\nCurrent accepted languages are:{0}".format(language_list))
+    
+    for lang in accepted_language_values:
+        if(val.upper() == lang):
+            language_file = val.upper()
+            break
+     
+###############################################
+
+#This function loads up the config file
+#and the other saves to the config file.
+#the config file is as follows:
+
+#  LANGUAGE
+#  COMPRESSION LEVEL
+
+# everything is loaded and stored in the correct variables
+
+def config_save():
+
+    #open the config file
+
+    
+    file_config = open(config_file_path, "w")
+
+    #write the variables to it
+    
+    file_config.write(str(language_file) + "\n")
+    file_config.write(str(compress_level) + "\n")
+
+    #save it
+    
+    file_config.close()
+
+def config_load():
+    
+    #open the config file
+    try:
+        file_config = open(config_file_path, "r")
+    except FileNotFoundError:
+        #we didn't find a config file
+        #return and let it stay with the default config
+        return
+
+
+    #read the file into the variables
+
+    language_file = file_config.readline().rstrip('\r\n')
+
+    compress_level = int(file_config.readline())
+
+    #then close the file
+    
+    file_config.close()
+
+
+###############################################
+
+#handles the main config window
+
+def config():
+    getting_config = True
+
+    while getting_config == True:
+        #clear the screen again for a better user experience
+        
+        os.system('cls||clear')
+
+        #print the config options
+
+        print("---------{0} config---------\n\n".format(light_file_version))
+        print("Available options:\n")
+        print("Level -- Level of compression")
+        print("Language -- Language that ligthfile will use")
+        print("Exit -- Exits the configuration screen")
+        print("\n")
+
+        option = input("Insert option: ")
+
+        #check for options and call the according functions
+        
+        if option.lower() == "level":
+            config_level()
+        if option.lower() == "language":
+            config_language()
+        if option.lower() == "exit":
+            getting_config = False
+            os.system('cls||clear')
+
+
+        #write the changes to disk
+
+        config_save()
+
+###################
+
 #puts the appropriate vavlues in the main variables
 #by getting them from the user and 
         
@@ -198,7 +373,7 @@ def doUserInput():
     #using the getOp() function to check if the user input is valid
     #and keep on asking the user until it is fully valid
     
-    print("(C)ompression or (D)ecompression")
+    print("(C)ompression, (D)ecompression or C(O)nfig")
     gettingOp = True
     while (gettingOp == True):
         try:
@@ -207,8 +382,11 @@ def doUserInput():
         except ValueError as noOp:
             print(noOp)
         else:
-            gettingOp = False
-
+            if(operation != 2): #if not config
+                gettingOp = False
+            else:
+                config()
+                print("(C)ompression, (D)ecompression or C(O)nfig")
     #now we will get the total file path from the user
 
     print("Insert the input file (example C:\\ExampleFolder\\ExampleFile.txt)")
@@ -227,10 +405,11 @@ def doUserInput():
 
     #now we already have enough information to continue, so return
 
+####################
+
 # takes a path to the file to be compressed and the output file
 # compresses the file in chunks and then appends the data to the
 # output file
-
 
 def compressFile(inpath, outpath):
     
@@ -270,7 +449,7 @@ def compressFile(inpath, outpath):
     outfile.write(cmpr.flush())
     outfile.close()
 
-
+##########################
 # takes a path to the file to be decompressed and the output file
 # decompresses the file in chunks and then appends the data to the
 # output file
@@ -325,11 +504,17 @@ else: # on a .py file
     exec_path = getattr(sys, '_MEIPASS', __file__)
 
 #now get the path to the installation directory from the path to the main executable
-#and then create the path to the history file
+#and then create the path to the history file and config file
 
 exec_path, exec_file_name = os.path.split(exec_path)
 
 history_path = exec_path + "\\" + history_file
+config_file_path = exec_path + "\\" + config_file_name
+
+#then we are going to call the config load function to
+#load the appropriate variables.
+
+config_load()
 
 #check if there are any arguments
 #if there are, get the information from the arguments
