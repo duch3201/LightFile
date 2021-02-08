@@ -18,8 +18,9 @@ import getopt
 ################################################################
 #                   TODO:
 #
-#   Re-add config
 #   Re-add ARDT support (maybe even make it better?)
+#
+#   There are several TODOs all over the file, maybe take a look at them
 #
 ################################################################
 
@@ -53,11 +54,26 @@ language_file = "ENG"
 accepted_language_values = ["ENG", "PL", "POR"]
 language_list = "English(ENG), Polish(PL), Portuguese(POR)"
 
+# ARDT variables
+ARDT_ext = ".lfl"
+ARDT_lines = []
+
 #keywords to be detected in the getOp() function
 
 validConfigSelectors =        ["o", "config", "configuration"]
 validCompressionSelectors =   ["c", "compress", "compression"]
 validDecompressionSelectors = ["d", "decompress", "decompression"]
+
+
+###################
+
+def ARDT_load_lines():
+
+    #TODO this function
+
+    return
+
+
 
 ###################
 
