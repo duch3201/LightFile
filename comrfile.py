@@ -8,6 +8,8 @@ from inspect import getsourcefile
 from os.path import abspath
 import threading as mt
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile") #this is for the window title
+
+
 #takes a complete path (example: C:/Users/JohnDoe/Desktop/example.txt) and removes the file name (in this case, C:/Users/JohnDoe/Desktop)
 
 #-----|LightFile|-----
@@ -96,7 +98,7 @@ class CouldnotFindConfigFile(Exception):
         if (didfindconfigfile == False):
             print("could not find the config file!" '\n' "error: 7")
             time.sleep(5)
-            #exit()
+            exit()
 
 class CouldNotStartThread(Exception):
     def __init__(self):
@@ -124,8 +126,13 @@ qwerty = " "
 app_root_path = getPath(abspath(getsourcefile(lambda:0)))
 os.chdir(app_root_path)
 os.chdir("config")
+#debug = open("debug.txt", 'r').read()
 config_file = open ("languages.txt", 'r').read()
 os.chdir(root_path)
+
+
+
+
 
 #----|ARDT config file check|----
 try:
@@ -133,6 +140,7 @@ try:
     os.chdir(app_root_path)
     os.chdir(languages_folder)
     os.chdir(config_file)
+
 except FileNotFoundError:
     didfindconfigfile = False
     raise CouldnotFindConfigFile
@@ -175,6 +183,10 @@ except:
     raise UnknownCommand
 
 
+
+
+
+
 path = getPath(path_total)
 file_name = getFileNameFromPath(path_total)
     
@@ -189,19 +201,19 @@ os.chdir(root_path)
 try:
     os.chdir(path)
 except FileNotFoundError:
-    print("Directory: {0} does not exist!".format(path))
+    print(line111.format(path))
     line111.close()
     time.sleep(5)
     print("error: 2")
     exit()
 except NotADirectoryError:
-    print("{0} is not a directory!".format(path))
+    print("{0}", line114.format(path))
     line114.close()
     time.sleep(5)
     print("error: 3")
     exit()
 except PermissionError:
-    print("You do not have permissions to change to {0}".format(path))
+    print(line117, " {0}".format(path))
     line117.close()
     time.sleep(5)
     print("error: 4")
@@ -210,8 +222,7 @@ except PermissionError:
 #read the file
 
 try:
-  fileforcompressionthread = mt._start_new_thread(str == open(file_name, 'rb').read() ("thread-1") )  
-  fileforcompressionthread.start()
+  forcompression = open(file_name, 'rb').read() 
 
 except FileNotFoundError:
     logging.critical('This file does not exist!')
@@ -219,21 +230,16 @@ except FileNotFoundError:
     print("error: 1")
     time.sleep(5)
     exit()
-except CouldNotStartThread:
-    didstarthread = False
-    raise CouldNotStartThread
     
-
 #somewhere here i noticed a memory leak, Too Bad!
 
 start_time = time.time()
 
-print("raw size:", sys.getsizeof(qwerty))
+print("raw size:", sys.getsizeof(forcompression))
 
 try:
-   threadforcompressing = mt._start_new_thread ('compressed_data' == zlib.compress(str, 9) ) 
-   threadforcompressing.start()
-except FutureWarning:
+    compressed_data = zlib.compress(forcompression, 9)
+except FutureWarning:  
     print("an unknown error accured" '\n' "error: 6")
     time.sleep(5)
     exit()
@@ -348,8 +354,6 @@ if(len(sys.argv) == 1):
     time.sleep(10)
     exit()
 
-fileforcompressionthread.close()
-threadforcompressing.close()
 
 
 

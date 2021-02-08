@@ -91,6 +91,7 @@ try:
     os.chdir(app_root_path)
     os.chdir(languages_folder)
     os.chdir(config_file)
+    os.chdir("decompression")
 except FileNotFoundError:
     print("could not find the config file!" '\n' "error: 7" )
     time.sleep(5)

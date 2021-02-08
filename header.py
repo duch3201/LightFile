@@ -97,7 +97,7 @@ def doAutomation():
                 #help message argument
                 #just print a help message and exit the program
                 
-                print("PLACEHOLDER") #TODO add the help message
+                print("-o is the output file." '\n' "-i is the input file." '\n' "-h is the help option." '\n' "-L is the compression level option." '\n' "-c and -d are the operation options for compression and decompression.") #TODO add the help message
                 exit()
             if opt == "-L":
 
