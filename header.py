@@ -42,6 +42,7 @@ input_file = ""
 output_file = ""
 config_file_name = "config.cfg"
 config_file_path = ""
+language_folder_name = "lang"
 
 
 #other variables
@@ -56,6 +57,7 @@ language_list = "English(ENG), Polish(PL), Portuguese(POR)"
 
 # ARDT variables
 ARDT_ext = ".lfl"
+current_line = 0
 ARDT_lines = []
 
 #keywords to be detected in the getOp() function
@@ -64,16 +66,62 @@ validConfigSelectors =        ["o", "config", "configuration"]
 validCompressionSelectors =   ["c", "compress", "compression"]
 validDecompressionSelectors = ["d", "decompress", "decompression"]
 
+###################
+
+#returns the next line in the ARDT list
+
+def ARDT_next():
+
+    global current_line
+    global ARDT_lines
+    
+    current_line += 1
+
+    return ARDT_lines[current_line - 1]
+    
 
 ###################
 
-def ARDT_load_lines():
+#loads the language into ARDT_lines
+#to be used in the ARDT_next() function
 
-    #TODO this function
+def ARDT_load_lines(language_file_path):
 
-    return
+    global ARDT_lines
+    global ARDT_ext
+    
+    try:
+        language_file = open(language_file_path, "r")
+    except:
+
+        #we weren't able to open the selected language file, so try to open the English file
+        
+        print("Couldn't open the selected language file! Trying to open the default language.")
+        language_folder, current_lang_file = os.path.split(language_file_path)
+        
+        try:
+            language_file = open(language_folder + "\\ENG" + ARDT_ext)
+        except:
+
+            #failed to load the english file, exit program
+            
+            print("Failed to open the default language file! Exiting application.")
+            exit()
+
+    
+    line_buffer = language_file.readlines()
+
+    #we get the lines with a newline.
+    #lets take care of those
+
+    for line in line_buffer:
+        
+        ARDT_lines.append(line.rstrip('\r\n'))
 
 
+    print(ARDT_next())
+        
+    input()
 
 ###################
 
@@ -83,24 +131,17 @@ def ARDT_load_lines():
 def getOp(op):
 
     
-    #first loop through the compression selector list
     for selector in validCompressionSelectors:
         if (op.lower() == selector):
             return 0
-
-    #then loop through the decompression selector list
     
     for selector in validDecompressionSelectors:
         if (op.lower() == selector):
             return 1
-    #and loop throug the configuration selector list
-    
+
     for selector in validConfigSelectors:
         if (op.lower() == selector):
             return 2
-
-    #if we reach here, it is not a valid operation selector
-    #so raise a ValueError exception
     
     raise ValueError("Not a valid operaton!")
 
@@ -400,6 +441,9 @@ def doUserInput():
         else:
             if(operation != 2): #if not config
                 gettingOp = False
+
+                
+                
             else:
                 config()
                 print("(C)ompression, (D)ecompression or C(O)nfig")
@@ -531,6 +575,13 @@ config_file_path = exec_path + "\\" + config_file_name
 #load the appropriate variables.
 
 config_load()
+
+#now that we loaded the config into the correct variables,
+#we will load the language lines from the appropriate file
+
+language_file_path = exec_path + "\\" + language_folder_name + "\\" + language_file + ARDT_ext
+
+ARDT_load_lines(language_file_path)
 
 #check if there are any arguments
 #if there are, get the information from the arguments
