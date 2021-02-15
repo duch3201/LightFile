@@ -74,12 +74,13 @@ def ARDT_next():
 
     global current_line
     global ARDT_lines
-    
+
+    line = ARDT_lines[current_line]
+
     current_line += 1
 
-    return ARDT_lines[current_line - 1]
+    return line
     
-
 ###################
 
 #loads the language into ARDT_lines
