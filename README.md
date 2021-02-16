@@ -3,7 +3,7 @@
 
 Note. This app requires that python is installed
 
-the app is in beta 1.1
+the app is in beta 1.2
 
 https://trello.com/b/HaC2BQJz/lightfile link to a trello board
 
@@ -16,7 +16,6 @@ https://trello.com/b/HaC2BQJz/lightfile link to a trello board
 ## What am i working on?
 right now i am working on
 
-- chunk file reading
 - logging
 - GUI
 
