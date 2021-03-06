@@ -45,9 +45,23 @@ config_file_path = ""
 language_folder_name = "lang"
 
 
+
 #other variables
 
 light_file_version = "LightFile 1.2"
+ErrorLevel = 0
+
+#lightfile "watchdog" function 
+def watchdog():
+
+    #print("hello, world!")
+    if (ErrorLevel == "1"):
+        print("File {0} does not exist!")
+        exit()
+
+
+
+
 
 #language variables
 
@@ -103,7 +117,7 @@ def ARDT_load_lines(language_file_path):
         try:
             language_file = open(language_folder + "\\ENG" + ARDT_ext)
         except:
-
+            watchdog()
             #failed to load the english file, exit program
             
             print("Failed to open the default language file! Exiting application.")
@@ -480,8 +494,9 @@ def compressFile(inpath, outpath):
         outfile = open(outpath + compressed_ext, "w")
         infile  = open(inpath, "rb")
     except FileNotFoundError:
-        print("File {0} does not exist!".format(inpath))
-        exit()
+        watchdog()
+        #print("File {0} does not exist!".format(inpath))
+        #exit()
     
     #empty the output file and close it to be reopened in a new mode
     
