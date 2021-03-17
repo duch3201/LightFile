@@ -44,24 +44,26 @@ config_file_name = "config.cfg"
 config_file_path = ""
 language_folder_name = "lang"
 
+#exceptions
+class generalerror(Exception): #use this exception when something really unexpected happen, like something we can't really check for
+    def __init__(self):
+        ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
+        print("an unknown error accured and the app cannot continue")
+        print("if you are seeing this error you probably tried to commpres a file with a space ' ', sadly we don't support files with spaces yet.")
+        #and yes i am aware we could check for spaces in the file name and replace them with "_" but i am too lazy to do that, 
+        #also i would probably completely broke this while doing that... Too bad!
+
+        #In vsc it works fine but it cmd it doesn't... what the !#%@, check github for details https://github.com/duch3201/LightFile/issues/21
+
+class wemayneedthislater(Exception):
+        print("we may need this later, or we may need to use it rn. if that's true i have no clue where, show me where in comments #")
+        exit()
 
 
 #other variables
 
-light_file_version = "LightFile 1.2"
-ErrorLevel = 0
-
-#lightfile "watchdog" function 
-def watchdog():
-
-    #print("hello, world!")
-    if (ErrorLevel == "1"):
-        print("File {0} does not exist!")
-        exit()
-
-
-
-
+#sometimes i sit and wonder, what the hell is wrong with me
+light_file_version = "LightFile 2.0 lol i think, im trying to bring back features from the old version and add more so why the hell not go straight to 2.0. also i am the $&*)@^% CEO i can do what ever i want!"
 
 #language variables
 
@@ -104,37 +106,12 @@ def ARDT_load_lines(language_file_path):
 
     global ARDT_lines
     global ARDT_ext
-    
-    try:
-        language_file = open(language_file_path, "r")
-    except:
 
-        #we weren't able to open the selected language file, so try to open the English file
-        
-        print("Couldn't open the selected language file! Trying to open the default language.")
-        language_folder, current_lang_file = os.path.split(language_file_path)
-        
-        try:
-            language_file = open(language_folder + "\\ENG" + ARDT_ext)
-        except:
-            watchdog()
-            #failed to load the english file, exit program
-            
-            print("Failed to open the default language file! Exiting application.")
-            exit()
+    # im gonna do it the old fashioned way, sorry
 
-    
-    line_buffer = language_file.readlines()
-
-    #we get the lines with a newline.
-    #lets take care of those
-
-    for line in line_buffer:
-        
-        ARDT_lines.append(line.rstrip('\r\n'))
-
-
-    print(ARDT_next())
+    os.chdir("lang")
+    line1 = open("line1.lfl", "r")
+    print(line1.read())
         
     input()
 
@@ -194,15 +171,28 @@ def doAutomation():
     #loop through every option and do the checks
 
     #TODO: better exception handling
+    #on it!
         
+    #This code is supposed to be simple
+    #but it seems that's not the case
+    #These errors is staring back at me
+
+
+
+
+
     try:
         for opt, arg in opts:
             if opt == "-h":
-
                 #help message argument
                 #just print a help message and exit the program
                 
-                print("-o is the output file." '\n' "-i is the input file." '\n' "-h is the help option." '\n' "-L is the compression level option." '\n' "-c and -d are the operation options for compression and decompression.") #TODO add the help message
+                print("-o is the output file. not strictly nescessary as it will be defaulted to the same as the input one if it doesn't exist")
+                print("#-i is the input file. it is nescessary and the program should not run without it.")
+                print("-h is the help option. print out a help message and exit the program")
+                print("-L is the compression level option. not nescessary and will default to 6")
+                print("-c and -d are the operation options for compression and decompression. it is nescessary and the program should not run without it.") 
+                #TODO add the help message, Done and Done!
                 exit()
             if opt == "-L":
 
@@ -494,10 +484,12 @@ def compressFile(inpath, outpath):
         outfile = open(outpath + compressed_ext, "w")
         infile  = open(inpath, "rb")
     except FileNotFoundError:
-        watchdog()
-        #print("File {0} does not exist!".format(inpath))
-        #exit()
-    
+        print("File {0} does not exist!".format(inpath))
+        exit()
+    except:
+        raise generalerror
+
+
     #empty the output file and close it to be reopened in a new mode
     
     outfile.write("")
