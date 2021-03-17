@@ -55,9 +55,9 @@ class generalerror(Exception): #use this exception when something really unexpec
 
         #In vsc it works fine but it cmd it doesn't... what the !#%@, check github for details https://github.com/duch3201/LightFile/issues/21
 
-class wemayneedthislater(Exception):
-        print("we may need this later, or we may need to use it rn. if that's true i have no clue where, show me where in comments #")
-        exit()
+#class wemayneedthislater(Exception):
+ #       print("we may need this later, or we may need to use it rn. if that's true i have no clue where, show me where in comments #")
+  #      exit()
 
 
 #other variables
@@ -176,7 +176,7 @@ def doAutomation():
     #This code is supposed to be simple
     #but it seems that's not the case
     #These errors is staring back at me
-
+    #half*alive The fall
 
 
 
