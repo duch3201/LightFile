@@ -50,6 +50,7 @@ class generalerror(Exception): #use this exception when something really unexpec
         ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
         print("an unknown error accured and the app cannot continue")
         print("if you are seeing this error you probably tried to commpres a file with a space ' ', sadly we don't support files with spaces yet.")
+        exit()
         #and yes i am aware we could check for spaces in the file name and replace them with "_" but i am too lazy to do that, 
         #also i would probably completely broke this while doing that... Too bad!
 
