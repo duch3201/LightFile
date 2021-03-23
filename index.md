@@ -1,37 +1,18 @@
-## Welcome to GitHub Pages
+# Welcome to the official website of LightFile
 
-You can use the [editor on GitHub](https://github.com/duch3201/LightFile/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-### Markdown
+### What is LightFile?
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+LightFile is a lightweight and easy-to-use compression app written 100% in python
 
-```markdown
-Syntax highlighted code block
+### what are the pros of using LightFile?
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/duch3201/LightFile/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+- LightFile is cmd based which means it doesn't have a GUI, because of that LF doesn't use a lot of system memory
+- it's stupid fast
+- our config file has many options to change which makes it very customizable 
+- for ease of use and for people that aren't tech savy you can download a installer (.exe)
 
 ### Support or Contact
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+Having trouble with LightFile? Check out our [documentation](https://github.com/Light-Software/LightFile/wiki) or [open a issue](https://github.com/Light-Software/LightFile/issues) and we’ll help you sort it out.
