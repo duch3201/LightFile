@@ -21,6 +21,10 @@ import getopt
 #   Re-add ARDT support (maybe even make it better?)
 #
 #   There are several TODOs all over the file, maybe take a look at them
+#   
+#   in doAutomation function do:
+#   beter exception handeling
+#   and make something better
 #
 ################################################################
 
@@ -50,15 +54,17 @@ class generalerror(Exception): #use this exception when something really unexpec
         ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
         print("an unknown error accured and the app cannot continue")
         print("if you are seeing this error you probably tried to commpres a file with a space ' ', sadly we don't support files with spaces yet.")
+        print("error code: 0")
+        time.sleep(5)
         exit()
         #and yes i am aware we could check for spaces in the file name and replace them with "_" but i am too lazy to do that, 
         #also i would probably completely broke this while doing that... Too bad!
 
-        #In vsc it works fine but it cmd it doesn't... what the !#%@, check github for details https://github.com/duch3201/LightFile/issues/21
-
-#class wemayneedthislater(Exception):
- #       print("we may need this later, or we may need to use it rn. if that's true i have no clue where, show me where in comments #")
-  #      exit()
+#class generalerror2(Exception):
+ #       ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
+  #      print("sorry someting went wrong on our side and the app cannot recover", '\n' "error code: 0")
+   #     time.sleep(5)
+    #    exit()
 
 
 #other variables
