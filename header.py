@@ -5,6 +5,7 @@ import ctypes
 import sys
 import zlib
 import getopt
+import logging
 
 #############################################################################
 #                                                                           #
@@ -30,6 +31,9 @@ import getopt
 
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # window title
 
+#logging thing, idk how to describe it
+logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+
 #main variables
 
 input_file_path = ""     # name and path of the input file
@@ -51,6 +55,7 @@ language_folder_name = "lang"
 #exceptions
 class generalerror(Exception): #use this exception when something really unexpected happen, like something we can't really check for
     def __init__(self):
+        logging.critical("a critical error accured, user probably tried to compress a file with a space in the filename")
         ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
         print("an unknown error accured and the app cannot continue")
         print("if you are seeing this error you probably tried to commpres a file with a space ' ', sadly we don't support files with spaces yet.")
@@ -58,10 +63,11 @@ class generalerror(Exception): #use this exception when something really unexpec
         time.sleep(5)
         exit()
         #and yes i am aware we could check for spaces in the file name and replace them with "_" but i am too lazy to do that, 
-        #also i would probably completely broke this while doing that... Too bad!
+        #also i would probably completely break this while doing that... Too bad!
 
 class generalerror2(Exception):
     def __init__(self):
+        logging.critical("Something unexpected error")
         ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
         print("sorry someting went wrong on our side and the app cannot recover", '\n' "error code: 0")
         time.sleep(5)
@@ -178,14 +184,6 @@ try:
 
         #TODO: better exception handling
         #on it!
-            
-        #This code is supposed to be simple
-        #but it seems that's not the case
-        #These errors is staring back at me
-        #half*alive The fall
-
-
-
 
         try:
             for opt, arg in opts:
@@ -383,6 +381,7 @@ try:
         except FileNotFoundError:
             #we didn't find a config file
             #return and let it stay with the default config
+            logging.info('config file was not found! continuing with defult settings')
             return
 
 
@@ -449,7 +448,7 @@ try:
         #it will be cleaner that way
 
         os.system('cls||clear')
-        
+        logging.info("app was started")
         #first off all get the operation
         #using the getOp() function to check if the user input is valid
         #and keep on asking the user until it is fully valid
@@ -548,6 +547,7 @@ try:
             outfile = open(outpath, "w")
             infile  = open(inpath, "rb")
         except FileNotFoundError:
+            logging.critical('This file does not exist!')
             print("File {0} does not exist!".format(inpath))
             exit()
         
@@ -653,6 +653,7 @@ try:
 
     print("Elapsed time: {0} seconds".format(round(time.time() - start_time, 2)))
 except KeyboardInterrupt:
+    logging.info('user pressed ctrl+C, not, epic, dude')
     print("keybord interupt deteced!")
 except:
     raise generalerror2
