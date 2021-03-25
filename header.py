@@ -6,6 +6,7 @@ import sys
 import zlib
 import getopt
 import logging
+from sys import exit
 
 #############################################################################
 #                                                                           #
@@ -39,7 +40,7 @@ logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(level
 input_file_path = ""     # name and path of the input file
 output_file_path = ""    # name and path of the output file
 operation = 3            # the operation, be 0 to compress, 1 to decompress or 2 to configurate lightfile
-compress_level = 6       # the bigger the more compressed, at the expense of time to compress
+compress_level = 9       # the bigger the more compressed, at the expense of time to compress
 
 
 #file variables
@@ -77,18 +78,7 @@ class generalerror2(Exception):
 #other variables
 
 #sometimes i sit and wonder, what the hell is wrong with me
-light_file_version = "LightFile 2.0 lol i think, im trying to bring back features from the old version and add more so why the hell not go straight to 2.0. also i am the $&*)@^% CEO i can do what ever i want!"
-
-#language variables
-
-language_file = "ENG"
-accepted_language_values = ["ENG", "PL", "POR"]
-language_list = "English(ENG), Polish(PL), Portuguese(POR)"
-
-# ARDT variables
-ARDT_ext = ".lfl"
-current_line = 0
-ARDT_lines = []
+light_file_version = "LightFile 1.0"
 
 #keywords to be detected in the getOp() function
 
@@ -96,37 +86,7 @@ validConfigSelectors =        ["o", "config", "configuration"]
 validCompressionSelectors =   ["c", "compress", "compression"]
 validDecompressionSelectors = ["d", "decompress", "decompression"]
 
-###################
-
-#returns the next line in the ARDT list
 try:
-    def ARDT_next():
-
-        global current_line
-        global ARDT_lines
-
-        line = ARDT_lines[current_line]
-
-        current_line += 1
-
-        return line
-
-    ###################
-
-    #loads the language into ARDT_lines
-    #to be used in the ARDT_next() function
-
-    def ARDT_load_lines(language_file_path):
-
-        global ARDT_lines
-        global ARDT_ext
-
-        # im gonna do it the old fashioned way, sorry
-        # this is not going to work, i think we are gonna have to abandon it
-        # https://github.com/Light-Software/LightFile/issues/25
-
-        os.chdir("lang")    
-        input()
 
     ###################
     #checks if the argument op is a valid operation selector and returns accordingly
@@ -333,18 +293,6 @@ try:
         #check the values to see if it's empty or is an invalid value
         time.sleep(5)
 
-
-
-    def config_language():
-
-        global language_file
-
-        val = standardConfigFunction("Language", accepted_language_values, language_file, "The language that will be used.\nA restart is required for changes to appear.\n\nCurrent accepted languages are:{0}".format(language_list))
-        
-        for lang in accepted_language_values:
-            if(val.upper() == lang):
-                language_file = val.upper()
-                break
         
     ###############################################
 
@@ -366,7 +314,6 @@ try:
 
         #write the variables to it
         
-        file_config.write(str(language_file) + "\n")
         file_config.write(str(compress_level) + "\n")
 
         #save it
@@ -424,8 +371,6 @@ try:
             
             if option.lower() == "level":
                 config_level()
-            if option.lower() == "language":
-                config_language()
             if option.lower() == "Debug":
                 config_Debug()
             if option.lower() == "exit":
@@ -485,7 +430,6 @@ try:
         global output_file_path
         
         output_file_path = input(": ")
-
         #now we already have enough information to continue, so return
 
     ####################
@@ -497,7 +441,6 @@ try:
     def compressFile(inpath, outpath):
         
         cmpr = zlib.compressobj(compress_level)
-
         try:
             outfile = open(outpath + compressed_ext, "w")
             infile  = open(inpath, "rb")
@@ -516,8 +459,7 @@ try:
         #reopen it in append mode
 
         outfile = open(outpath + compressed_ext, "ab")
-        
-        
+
         #read the first chunk
 
         data = infile.read(chunk_size)
@@ -594,7 +536,6 @@ try:
     #and then create the path to the history file and config file
 
     exec_path, exec_file_name = os.path.split(exec_path)
-
     history_path = exec_path + "\\" + history_file
     config_file_path = exec_path + "\\" + config_file_name
 
@@ -606,9 +547,7 @@ try:
     #now that we loaded the config into the correct variables,
     #we will load the language lines from the appropriate file
 
-    language_file_path = exec_path + "\\" + language_folder_name + "\\" + language_file + ARDT_ext
 
-    ARDT_load_lines(language_file_path)
 
     #check if there are any arguments
     #if there are, get the information from the arguments
@@ -629,7 +568,6 @@ try:
         
         #since we are doing compression,
         #write the path to the history file
-        
         try:
             history_file = open(history_path, "w")
         except:
