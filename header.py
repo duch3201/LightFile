@@ -7,6 +7,9 @@ import zlib
 import getopt
 import logging
 from sys import exit
+import uuid
+import json
+
 
 #############################################################################
 #                                                                           #
@@ -20,20 +23,22 @@ from sys import exit
 ################################################################
 #                   TODO:
 #
-#   Re-add ARDT support (maybe even make it better?)
-#
-#   There are several TODOs all over the file, maybe take a look at them
+#   rewrite the whole History file function
 #   
 #   in doAutomation function do:
 #   beter exception handeling
 #   and make something better
+#
+#   Logging
+#
+#   There are several TODOs all over the file, maybe take a look at them
 #
 ################################################################
 
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # window title
 
 #logging thing, idk how to describe it
-logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='LightFile.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 #main variables
 
@@ -44,7 +49,7 @@ compress_level = 9       # the bigger the more compressed, at the expense of tim
 
 
 #file variables
-history_file = "history.lfh"
+history_file = "history.json"
 chunk_size = 32768
 compressed_ext = ".lfc"
 input_file = ""
@@ -52,6 +57,49 @@ output_file = ""
 config_file_name = "config.cfg"
 config_file_path = ""
 language_folder_name = "lang"
+
+#sorry...
+def writehistoryfile():    
+
+            
+    id = uuid.uuid4().urn
+
+    data = {}
+    data['Data'] = []
+    data['Data'].append({
+        'uuid': id,
+        'file name': history_file,
+        'location': history_path
+     })
+
+    with open('history.json', 'w') as outfile:
+        json.dump(data, outfile)
+
+
+
+
+
+def readhistoryfile():
+
+    #go to the history file directory
+    os.chdir(history_path)
+
+    try: # Opening JSON file
+        f = open(history_file)
+    except FileNotFoundError:
+        print("an error occured whie opening the history file")
+    # returns JSON object as 
+    # a dictionary
+    data = json.load(f)
+    
+    # Iterating through the json
+    # list
+    for i in data['emp_details']:
+         print(i)
+     
+    # Closing file
+    f.close()
+
 
 #exceptions
 class generalerror(Exception): #use this exception when something really unexpected happen, like something we can't really check for
@@ -74,10 +122,16 @@ class generalerror2(Exception):
         time.sleep(5)
         exit()
 
+class Historynotfound(Exception):
+    def __init__(self):
+        logging.warning("Could not find the history file, continuing without it")
+        ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
+        print("Could not find the history file, continuing without it", '\n' "error code: 0")
+        time.sleep(5)
+        
 
 #other variables
 
-#sometimes i sit and wonder, what the hell is wrong with me
 light_file_version = "LightFile 1.0"
 
 #keywords to be detected in the getOp() function
@@ -565,23 +619,7 @@ try:
 
     if(operation == 0):
         compressFile(input_file_path, output_file_path)
-        
-        #since we are doing compression,
-        #write the path to the history file
-        try:
-            history_file = open(history_path, "w")
-        except:
-
-            #if not found print an error message and continue with executing the program
-            
-            print("an error occured while opening the history ({0}) file!".format(history_path))
-        else:
-
-            #write the path
-
-            history_file.write(input_file_path)
-            history_file.close()
-            
+        writehistoryfile()
             
     else:
         decompressFile(input_file_path, output_file_path)
