@@ -49,6 +49,7 @@ compress_level = 9       # the bigger the more compressed, at the expense of tim
 
 
 #file variables
+global data
 history_file = "history.json"
 chunk_size = 32768
 compressed_ext = ".lfc"
@@ -57,6 +58,8 @@ output_file = ""
 config_file_name = "config.cfg"
 config_file_path = ""
 language_folder_name = "lang"
+
+
 
 #sorry...
 def writehistoryfile():    
@@ -85,21 +88,13 @@ def readhistoryfile():
     os.chdir(history_path)
 
     try: # Opening JSON file
-        f = open(history_file)
+        with open("data_file.json", "r") as read_file:
+        
+            data = json.load(read_file)
     except FileNotFoundError:
         print("an error occured whie opening the history file")
-    # returns JSON object as 
-    # a dictionary
-    data = json.load(f)
-    
-    # Iterating through the json
-    # list
-    for i in data['emp_details']:
-         print(i)
-     
-    # Closing file
-    f.close()
 
+        print(data)
 
 #exceptions
 class generalerror(Exception): #use this exception when something really unexpected happen, like something we can't really check for
@@ -111,14 +106,17 @@ class generalerror(Exception): #use this exception when something really unexpec
         print("error code: 0")
         time.sleep(5)
         exit()
-        #and yes i am aware we could check for spaces in the file name and replace them with "_" but i am too lazy to do that, 
-        #also i would probably completely break this while doing that... Too bad!
+        # i don't know how but now we can compress files with spaces and special characters, im going to keep this here just in case
 
 class generalerror2(Exception):
     def __init__(self):
         logging.critical("Something unexpected error")
         ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
         print("sorry someting went wrong on our side and the app cannot recover", '\n' "error code: 0")
+        with open("data_file.json", "r") as read_file:
+        
+            data = json.load(read_file)
+        print(data)
         time.sleep(5)
         exit()
 
@@ -132,6 +130,7 @@ class Historynotfound(Exception):
 
 #other variables
 
+debugon = True
 light_file_version = "LightFile 1.0"
 
 #keywords to be detected in the getOp() function
@@ -196,8 +195,6 @@ try:
 
         #loop through every option and do the checks
 
-        #TODO: better exception handling
-        #on it!
 
         try:
             for opt, arg in opts:
@@ -209,8 +206,7 @@ try:
                     print("#-i is the input file. it is nescessary and the program should not run without it.")
                     print("-h is the help option. print out a help message and exit the program")
                     print("-L is the compression level option. not nescessary and will default to 6")
-                    print("-c and -d are the operation options for compression and decompression. it is nescessary and the program should not run without it.") 
-                    #TODO add the help message, Done and Done!
+                    print("-c and -d are the operation options for compression and decompression. it is nescessary and the program should not run without it.")
                     exit()
                 if opt == "-L":
 
@@ -499,10 +495,20 @@ try:
             outfile = open(outpath + compressed_ext, "w")
             infile  = open(inpath, "rb")
         except FileNotFoundError:
-            print("File {0} does not exist!".format(inpath))
-            exit()
+            raise generalerror2
+        
+        #except FileNotFoundError as e:
+         #   if (debugon == True):
+          #      print(e)
+           # else:
+            #    print("File {0} does not exist!".format(inpath))
+             #   exit()
+
         except:
-            raise generalerror
+            if (debugon == True):
+                time.sleep(1)
+            else:
+                raise generalerror
 
 
         #empty the output file and close it to be reopened in a new mode
@@ -542,10 +548,12 @@ try:
         try:
             outfile = open(outpath, "w")
             infile  = open(inpath, "rb")
-        except FileNotFoundError:
-            logging.critical('This file does not exist!')
-            print("File {0} does not exist!".format(inpath))
-            exit()
+        except FileNotFoundError as e:
+            if (debugon == True):
+                print(e)
+            else:
+                print("File {0} does not exist!".format(inpath))
+                exit()
         
         #empty the output file and close it to be reopened in a new mode
         
@@ -628,8 +636,16 @@ try:
     #print the elapsed time rounded to two decimal points in second
 
     print("Elapsed time: {0} seconds".format(round(time.time() - start_time, 2)))
-except KeyboardInterrupt:
-    logging.info('user pressed ctrl+C, not, epic, dude')
-    print("keybord interupt deteced!")
+except KeyboardInterrupt as e:
+    if (debugon == True):
+        print(e)
+    else:
+        logging.info('user pressed ctrl+C, not, epic, dude')
+        print("keybord interupt deteced!")
+
 except:
-    raise generalerror2
+    if (debugon == True):
+        time.sleep(1)
+        exit()
+    else:
+        raise generalerror2
