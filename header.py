@@ -75,7 +75,7 @@ def writehistoryfile():
         'location': history_path
      })
 
-    with open('history.json', 'w') as outfile:
+    with open('history.json', 'a') as outfile:
         json.dump(data, outfile)
 
 
@@ -89,12 +89,13 @@ def readhistoryfile():
 
     try: # Opening JSON file
         with open("data_file.json", "r") as read_file:
-        
+            global data
             data = json.load(read_file)
     except FileNotFoundError:
         print("an error occured whie opening the history file")
 
-        print(data)
+    print(data)
+
 
 #exceptions
 class generalerror(Exception): #use this exception when something really unexpected happen, like something we can't really check for
@@ -104,6 +105,10 @@ class generalerror(Exception): #use this exception when something really unexpec
         print("an unknown error accured and the app cannot continue")
         print("if you are seeing this error you probably tried to commpres a file with a space ' ', sadly we don't support files with spaces yet.")
         print("error code: 0")
+        with open("data_file.json", "r") as read_file:
+        
+            data = json.load(read_file)            
+        
         time.sleep(5)
         exit()
         # i don't know how but now we can compress files with spaces and special characters, im going to keep this here just in case
@@ -125,12 +130,15 @@ class Historynotfound(Exception):
         logging.warning("Could not find the history file, continuing without it")
         ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
         print("Could not find the history file, continuing without it", '\n' "error code: 0")
+        with open("data_file.json", "r") as read_file:
+        
+            data = json.load(read_file)
         time.sleep(5)
         
 
 #other variables
 
-debugon = True
+debugon = False
 light_file_version = "LightFile 1.0"
 
 #keywords to be detected in the getOp() function
@@ -640,6 +648,11 @@ except KeyboardInterrupt as e:
     if (debugon == True):
         print(e)
     else:
+        os.chdir("/")
+        os.chdir("Y:/LightFile")
+        with open("history.json", "r") as read_file:
+            data = json.load(read_file) 
+            print(data)
         logging.info('user pressed ctrl+C, not, epic, dude')
         print("keybord interupt deteced!")
 
@@ -648,4 +661,7 @@ except:
         time.sleep(1)
         exit()
     else:
+        with open("history.json", "r") as read_file:
+        
+            data = json.load(read_file)                 
         raise generalerror2
