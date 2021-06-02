@@ -1,8 +1,3 @@
-# This project has been put on hold
-i don't have energy to continue making updates for LF, but in the future i may come back to it
-
-***
-
 
 # LightFile, A compression app written in python
 
