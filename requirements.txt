@@ -1,5 +1,3 @@
-time
-ctypes
 sys
 zlib
 getopt
