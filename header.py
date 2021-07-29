@@ -7,9 +7,6 @@ import zlib
 import getopt
 import logging
 from sys import exit
-import uuid
-import json
-
 
 #############################################################################
 #                                                                           #
@@ -23,22 +20,20 @@ import json
 ################################################################
 #                   TODO:
 #
-#   rewrite the whole History file function
+#   Re-add ARDT support (maybe even make it better?)
+#
+#   There are several TODOs all over the file, maybe take a look at them
 #   
 #   in doAutomation function do:
 #   beter exception handeling
-#   and make something better
-#
-#   Logging
-#
-#   There are several TODOs all over the file, maybe take a look at them
+#   and make something better idk ask math
 #
 ################################################################
 
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # window title
 
 #logging thing, idk how to describe it
-logging.basicConfig(filename='LightFile.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 #main variables
 
@@ -49,8 +44,7 @@ compress_level = 9       # the bigger the more compressed, at the expense of tim
 
 
 #file variables
-global data
-history_file = "history.json"
+history_file = "history.lfh"
 chunk_size = 32768
 compressed_ext = ".lfc"
 input_file = ""
@@ -58,44 +52,6 @@ output_file = ""
 config_file_name = "config.cfg"
 config_file_path = ""
 language_folder_name = "lang"
-
-
-
-#sorry...
-def writehistoryfile():    
-
-            
-    id = uuid.uuid4().urn
-
-    data = {}
-    data['Data'] = []
-    data['Data'].append({
-        'uuid': id,
-        'file name': history_file,
-        'location': history_path
-     })
-
-    with open('history.json', 'a') as outfile:
-        json.dump(data, outfile)
-
-
-
-
-
-def readhistoryfile():
-
-    #go to the history file directory
-    os.chdir(history_path)
-
-    try: # Opening JSON file
-        with open("data_file.json", "r") as read_file:
-            global data
-            data = json.load(read_file)
-    except FileNotFoundError:
-        print("an error occured whie opening the history file")
-
-    print(data)
-
 
 #exceptions
 class generalerror(Exception): #use this exception when something really unexpected happen, like something we can't really check for
@@ -105,40 +61,23 @@ class generalerror(Exception): #use this exception when something really unexpec
         print("an unknown error accured and the app cannot continue")
         print("if you are seeing this error you probably tried to commpres a file with a space ' ', sadly we don't support files with spaces yet.")
         print("error code: 0")
-        with open("data_file.json", "r") as read_file:
-        
-            data = json.load(read_file)            
-        
         time.sleep(5)
         exit()
-        # i don't know how but now we can compress files with spaces and special characters, im going to keep this here just in case
+        #and yes i am aware we could check for spaces in the file name and replace them with "_" but i am too lazy to do that, 
+        #also i would probably completely break this while doing that... Too bad!
 
-class generalerror2(Exception):
-    def __init__(self):
-        logging.critical("Something unexpected error")
-        ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
-        print("sorry someting went wrong on our side and the app cannot recover", '\n' "error code: 0")
-        with open("data_file.json", "r") as read_file:
-        
-            data = json.load(read_file)
-        print(data)
-        time.sleep(5)
-        exit()
+#class generalerror2(Exception):
+ #   def __init__(self):
+  #      logging.critical("Something unexpected error")
+   #     ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
+    #    print("sorry someting went wrong on our side and the app cannot recover", '\n' "error code: 0")
+     #   time.sleep(5)
+      #  exit()
 
-class Historynotfound(Exception):
-    def __init__(self):
-        logging.warning("Could not find the history file, continuing without it")
-        ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
-        print("Could not find the history file, continuing without it", '\n' "error code: 0")
-        with open("data_file.json", "r") as read_file:
-        
-            data = json.load(read_file)
-        time.sleep(5)
-        
 
 #other variables
 
-debugon = False
+#sometimes i sit and wonder, what the hell is wrong with me
 light_file_version = "LightFile 1.0"
 
 #keywords to be detected in the getOp() function
@@ -203,6 +142,8 @@ try:
 
         #loop through every option and do the checks
 
+        #TODO: better exception handling
+        #on it!
 
         try:
             for opt, arg in opts:
@@ -214,7 +155,8 @@ try:
                     print("#-i is the input file. it is nescessary and the program should not run without it.")
                     print("-h is the help option. print out a help message and exit the program")
                     print("-L is the compression level option. not nescessary and will default to 6")
-                    print("-c and -d are the operation options for compression and decompression. it is nescessary and the program should not run without it.")
+                    print("-c and -d are the operation options for compression and decompression. it is nescessary and the program should not run without it.") 
+                    #TODO add the help message, Done and Done!
                     exit()
                 if opt == "-L":
 
@@ -319,23 +261,16 @@ try:
 
         global compress_level
 
-        val = standardConfigFunction("Level", "0-9", compress_level, "The level of compression to be used. Higher values have better compression at the expensive of taking more time to compress\n0 is no compression and 9 is max compression")
+        print("Level 0-9, the current compression level is:", compress_level, " you can change this value for better compression. however higher values may take more time" )
         
+        new_compression_level = input(": ") 
+       
+        os.chdir("configs")
+        cfglevel = open("level.cfg", 'w')
+        cfglevel.write(new_compression_level)
+       
+        return
 
-        #check the values to see if it's empty or is an invalid value
-        
-        if(val == ""):
-            return
-        else:
-            try:
-                val = int(val)
-                if val < 0 or val > 9:
-                    #the user put in an invalid value. simply return
-                    return
-                compress_level = int(val)
-            except ValueError:
-                #uh oh! the user probably put a letter here. let's not change the compress level
-                return
 
     ############################
 
@@ -344,14 +279,16 @@ try:
     def config_Debug():
         global Debug_level
         Debug_level = False
-
-        val = standardConfigFunction("Level", "True-False", Debug_level, "if you enable this you will get a whole essay about a error\nTrue/False btw")
         
-        print(val)
-        #check the values to see if it's empty or is an invalid value
-        time.sleep(5)
-
+        print("options: true/false ,current value: ", Debug_level, "if set to true you will get debug messages")
         
+        new_debug_level = input(": ")
+        os.chdir("configs")
+        cfgdebug = open("debug.cfg", 'w')
+        cfg.write(new_debug_level)
+        
+        return
+
     ###############################################
 
     #This function loads up the config file
@@ -363,42 +300,27 @@ try:
 
     # everything is loaded and stored in the correct variables
 
-    def config_save():
-
+    #def config_load():
+     #   
         #open the config file
-
-        
-        file_config = open(config_file_path, "w")
-
-        #write the variables to it
-        
-        file_config.write(str(compress_level) + "\n")
-
-        #save it
-        
-        file_config.close()
-
-    def config_load():
-        
-        #open the config file
-        try:
-            file_config = open(config_file_path, "r")
-        except FileNotFoundError:
+      #  try:
+       #     file_config = open(config_file_path, "r")
+        #except FileNotFoundError:
             #we didn't find a config file
             #return and let it stay with the default config
-            logging.info('config file was not found! continuing with defult settings')
-            return
+         #   logging.info('config file was not found! continuing with defult settings')
+          #  return
 
 
         #read the file into the variables
 
-        language_file = file_config.readline().rstrip('\r\n')
+        #language_file = file_config.readline().rstrip('\r\n')
 
-        compress_level = int(file_config.readline())
+        #compress_level = int(file_config.readline())
 
         #then close the file
         
-        file_config.close()
+        #file_config.close()
 
 
     ###############################################
@@ -503,20 +425,10 @@ try:
             outfile = open(outpath + compressed_ext, "w")
             infile  = open(inpath, "rb")
         except FileNotFoundError:
-            raise generalerror2
-        
-        #except FileNotFoundError as e:
-         #   if (debugon == True):
-          #      print(e)
-           # else:
-            #    print("File {0} does not exist!".format(inpath))
-             #   exit()
-
+            print("File {0} does not exist!".format(inpath))
+            exit()
         except:
-            if (debugon == True):
-                time.sleep(1)
-            else:
-                raise generalerror
+            raise generalerror
 
 
         #empty the output file and close it to be reopened in a new mode
@@ -556,12 +468,10 @@ try:
         try:
             outfile = open(outpath, "w")
             infile  = open(inpath, "rb")
-        except FileNotFoundError as e:
-            if (debugon == True):
-                print(e)
-            else:
-                print("File {0} does not exist!".format(inpath))
-                exit()
+        except FileNotFoundError:
+            logging.critical('This file does not exist!')
+            print("File {0} does not exist!".format(inpath))
+            exit()
         
         #empty the output file and close it to be reopened in a new mode
         
@@ -612,7 +522,7 @@ try:
     #then we are going to call the config load function to
     #load the appropriate variables.
 
-    config_load()
+    #config_load()
 
     #now that we loaded the config into the correct variables,
     #we will load the language lines from the appropriate file
@@ -635,7 +545,23 @@ try:
 
     if(operation == 0):
         compressFile(input_file_path, output_file_path)
-        writehistoryfile()
+        
+        #since we are doing compression,
+        #write the path to the history file
+        try:
+            history_file = open(history_path, "w")
+        except:
+
+            #if not found print an error message and continue with executing the program
+            
+            print("an error occured while opening the history ({0}) file!".format(history_path))
+        else:
+
+            #write the path
+
+            history_file.write(input_file_path)
+            history_file.close()
+            
             
     else:
         decompressFile(input_file_path, output_file_path)
@@ -644,24 +570,11 @@ try:
     #print the elapsed time rounded to two decimal points in second
 
     print("Elapsed time: {0} seconds".format(round(time.time() - start_time, 2)))
-except KeyboardInterrupt as e:
-    if (debugon == True):
-        print(e)
-    else:
-        os.chdir("/")
-        os.chdir("Y:/LightFile")
-        with open("history.json", "r") as read_file:
-            data = json.load(read_file) 
-            print(data)
-        logging.info('user pressed ctrl+C, not, epic, dude')
-        print("keybord interupt deteced!")
-
+except KeyboardInterrupt:
+    logging.info('user pressed ctrl+C, not, epic, dude')
+    print("keybord interupt deteced!")
 except:
-    if (debugon == True):
-        time.sleep(1)
-        exit()
+    if debug_level == true:
+        print(a)
     else:
-        with open("history.json", "r") as read_file:
-        
-            data = json.load(read_file)                 
         raise generalerror2
