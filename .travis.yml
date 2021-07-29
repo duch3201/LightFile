@@ -1,0 +1,10 @@
+language: python
+rvm:
+ - 3.9
+ - os
+ - time
+ - ctypes
+ - sys
+ - zlib
+ - getopt
+ - logging
