@@ -7,6 +7,7 @@ import zlib
 import getopt
 import logging
 from sys import exit
+import traceback
 
 #############################################################################
 #                                                                           #
@@ -26,7 +27,7 @@ from sys import exit
 #   
 #   in doAutomation function do:
 #   beter exception handeling
-#   and make something better idk ask math
+#   and make something better
 #
 ################################################################
 
@@ -66,18 +67,24 @@ class generalerror(Exception): #use this exception when something really unexpec
         #and yes i am aware we could check for spaces in the file name and replace them with "_" but i am too lazy to do that, 
         #also i would probably completely break this while doing that... Too bad!
 
-#class generalerror2(Exception):
- #   def __init__(self):
-  #      logging.critical("Something unexpected error")
-   #     ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
-    #    print("sorry someting went wrong on our side and the app cannot recover", '\n' "error code: 0")
-     #   time.sleep(5)
-      #  exit()
+class generalerror2(Exception):
+    def __init__(self):
+        logging.critical("Something unexpected error")
+        ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
+        print("sorry someting went wrong on our side and the app cannot recover", '\n' "error code: 0")
+        time.sleep(5)
+        exit()
 
+class invalidvalueerror(Exception):
+    def __init__(self):
+        logging.critical("Something unexpected error")
+        ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
+        print("an invalid value has been detected, check config files", '\n' "error code: NaN")
+        time.sleep(5)
+        exit()
 
 #other variables
 
-#sometimes i sit and wonder, what the hell is wrong with me
 light_file_version = "LightFile 1.0"
 
 #keywords to be detected in the getOp() function
@@ -233,6 +240,31 @@ try:
 
     #################
 
+    #This function loads up the config file
+    #and the other saves to the config file.
+    #the config file is as follows:
+
+    #  LANGUAGE
+    #  COMPRESSION LEVEL
+
+    # everything is loaded and stored in the correct variables
+
+    def config_load():
+        
+        #open the config file
+        try:
+            compress_level = open("level.cfg", 'w')
+            Debug_level = open("debug.cfg", 'w')
+        except FileNotFoundError:
+            compress_level = 6
+            Debug_level = False
+            #we didn't find a config file
+            #return and let it stay with the default config
+            logging.info('config file was not found! continuing with defult settings')
+            return
+
+    ###############################################
+
     #prints the standard config option header and asks the user for an input,
     #returning the user input
 
@@ -258,15 +290,21 @@ try:
     #does the handling of the compression level config selection
 
     def config_level():
-
         global compress_level
+        os.chdir("configs")
 
         print("Level 0-9, the current compression level is:", compress_level, " you can change this value for better compression. however higher values may take more time" )
         
         new_compression_level = input(": ") 
-       
-        os.chdir("configs")
-        cfglevel = open("level.cfg", 'w')
+
+        if new_compression_level < 9:
+            cfglevel = open("level.cfg", 'w')    
+
+        if new_compression_level > 9:
+            raise invalidvalueerror
+        
+
+
         cfglevel.write(new_compression_level)
        
         return
@@ -278,7 +316,6 @@ try:
 
     def config_Debug():
         global Debug_level
-        Debug_level = False
         
         print("options: true/false ,current value: ", Debug_level, "if set to true you will get debug messages")
         
@@ -291,48 +328,14 @@ try:
 
     ###############################################
 
-    #This function loads up the config file
-    #and the other saves to the config file.
-    #the config file is as follows:
-
-    #  LANGUAGE
-    #  COMPRESSION LEVEL
-
-    # everything is loaded and stored in the correct variables
-
-    #def config_load():
-     #   
-        #open the config file
-      #  try:
-       #     file_config = open(config_file_path, "r")
-        #except FileNotFoundError:
-            #we didn't find a config file
-            #return and let it stay with the default config
-         #   logging.info('config file was not found! continuing with defult settings')
-          #  return
-
-
-        #read the file into the variables
-
-        #language_file = file_config.readline().rstrip('\r\n')
-
-        #compress_level = int(file_config.readline())
-
-        #then close the file
-        
-        #file_config.close()
-
-
-    ###############################################
-
     #handles the main config window
 
     def config():
         getting_config = True
 
         while getting_config == True:
-            #clear the screen again for a better user experience
-            
+
+            #clear the screen again for a better user experience 
             os.system('cls||clear')
 
             #print the config options
@@ -574,7 +577,7 @@ except KeyboardInterrupt:
     logging.info('user pressed ctrl+C, not, epic, dude')
     print("keybord interupt deteced!")
 except:
-    if debug_level == true:
-        print(a)
+    if debug_level == True:
+        traceback.print_exc()
     else:
         raise generalerror2
