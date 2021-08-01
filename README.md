@@ -1,7 +1,7 @@
 
 # LightFile, A compression app written in python
 
-https://www.travis-ci.com/duch3201/LightFile.svg?branch=main
+[![Build Status](https://www.travis-ci.com/duch3201/LightFile.svg?branch=main)](https://www.travis-ci.com/duch3201/LightFile)
 
 Note. This app requires that python is installed
 
