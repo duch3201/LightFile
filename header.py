@@ -34,10 +34,11 @@ import traceback
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # window title
 
 #logging thing, idk how to describe it
-logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='myapp.log', format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO,)
+logging.basicConfig(filename='LFdebug.log', encoding='utf-8', level=logging.DEBUG)
 
 #main variables
-Debug_level = ""
+Debug_level = ""         # debug option used for debuging
 input_file_path = ""     # name and path of the input file
 output_file_path = ""    # name and path of the output file
 operation = 3            # the operation, be 0 to compress, 1 to decompress or 2 to configurate lightfile
@@ -67,13 +68,13 @@ class generalerror(Exception): #use this exception when something really unexpec
         #and yes i am aware we could check for spaces in the file name and replace them with "_" but i am too lazy to do that, 
         #also i would probably completely break this while doing that... Too bad!
 
-class generalerror2(Exception):
-    def __init__(self):
-        logging.critical("Something unexpected error")
-        ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
-        print("sorry someting went wrong on our side and the app cannot recover", '\n' "error code: 0")
-        time.sleep(5)
-        exit()
+#class generalerror2(Exception):
+ #   def __init__(self):
+  #      logging.critical("Something unexpected error")
+   #     ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
+    #    print("sorry someting went wrong on our side and the app cannot recover", '\n' "error code: 0")
+     #   time.sleep(5)
+      #  exit()
 
 class invalidvalueerror(Exception):
     def __init__(self):
@@ -90,7 +91,7 @@ class missingconfig(Exception):
         print("Sorry but we couldn't find the config files/folder, the app will continue using defult settings", '\n')
         print("with the defult settings the compression level is 6 and debug options are disabled")
         time.sleep(5)
-        return
+        pass
         
 
 #other variables
@@ -109,12 +110,8 @@ validDecompressionSelectors = ["d", "decompress", "decompression"]
 
 try:
     os.chdir("configs")
-    compress_level = open("level.cfg", 'r')
-    Debug_level = open("debug.cfg", 'r')
-    compress_level.read()
-    Debug_level.read()
-    compress_level.close()
-    Debug_level.close()
+    compress_level = open("level.cfg", 'r').read()
+    Debug_level = open("debug.cfg", 'r').read()
     os.chdir("..")
 except:
     #oh it looks like we couldn't find these files, let's notify the user about it and continue with the defult
@@ -295,15 +292,16 @@ try:
     #########################
         
     #does the handling of the compression level config selection
-
     def config_level():
         global compress_level
-
+        os.system('cls||clear')
         os.chdir("configs")
+
+        print("##########|Compress level|##########")
 
         print("Level 0-9, the current compression level is:", compress_level, " you can change this value for better compression. however higher values may take more time" )
             
-            
+        cfglevel = ""
         new_compression_level = 0
         new_compression_level = input(": ") 
 
@@ -327,14 +325,11 @@ try:
 
     def config_Debug():
         os.system('cls||clear')
-        global Debug_level
-        Debug_level = ""
-        
         os.chdir("configs")
 
         print("##########|Debug|##########")
 
-        print("options: true/false ,current value: ", Debug_level, "if set to true you will get debug messages")
+        print("options: true/false ,current value:", Debug_level, '\n' '\n'  "if set to true you will get debug messages")
         
         new_debug_level = input(": ")
         cfgdebug = open("debug.cfg", 'w')

@@ -2,8 +2,8 @@ history.json
 .travis.yml
 history.lfh
 LICENSE
-Lightfile config for compilation.json
+"Lightfile config for compilation.json"
 readme.md
-/__pycache__
-/.github
-/Configs
+__pycache__/
+.github
+Configs/
