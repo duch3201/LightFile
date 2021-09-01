@@ -37,6 +37,11 @@ ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # window title
 logging.basicConfig(filename='myapp.log', format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO,)
 logging.basicConfig(filename='LFdebug.log', encoding='utf-8', level=logging.DEBUG)
 
+# global var
+global compress_level
+global Debug_level
+
+
 #main variables
 Debug_level = ""         # debug option used for debuging
 input_file_path = ""     # name and path of the input file
@@ -107,21 +112,26 @@ validDecompressionSelectors = ["d", "decompress", "decompression"]
 #################
 
 #This loads up the config file
-
 try:
     os.chdir("configs")
     compress_level = open("level.cfg", 'r').read()
     Debug_level = open("debug.cfg", 'r').read()
     os.chdir("..")
+    
 except:
     #oh it looks like we couldn't find these files, let's notify the user about it and continue with the defult
     compress_level = 6
     Debug_level = False
     raise missingconfig
 
-
-
-
+# refresh the config function
+def config_reload():
+    os.chdir("..")
+    os.chdir("configs")
+    compress_level.close()
+    Debug_level.close()
+    compress_level = "0"
+    Debug_level = ""
 
 
 try:
@@ -578,7 +588,7 @@ try:
 
             #write the path
 
-            history_file.write(input_file_path)
+            history_file.write(input_file_path) 
             history_file.close()
             
             
@@ -590,7 +600,7 @@ try:
 
     print("Elapsed time: {0} seconds".format(round(time.time() - start_time, 2)))
 except KeyboardInterrupt:
-    logging.info('user pressed ctrl+C, not, epic, dude')
+    logging.critical('user pressed ctrl+C, application terminated')
     print("keybord interupt deteced!")
 except:
     if Debug_level == True:
