@@ -37,10 +37,6 @@ ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # window title
 logging.basicConfig(filename='myapp.log', format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO,)
 logging.basicConfig(filename='LFdebug.log', encoding='utf-8', level=logging.DEBUG)
 
-# global var
-global compress_level
-global Debug_level
-
 
 #main variables
 Debug_level = ""         # debug option used for debuging
@@ -126,12 +122,18 @@ except:
 
 # refresh the config function
 def config_reload():
-    os.chdir("..")
+    global compress_level
+    global Debug_level
+    #os.chdir("..")
     os.chdir("configs")
-    compress_level.close()
-    Debug_level.close()
+   # compress_level.close()
+    #Debug_level.close()
     compress_level = "0"
     Debug_level = ""
+    compress_level = open("level.cfg", 'r').read()
+    Debug_level = open("debug.cfg", 'r').read()
+    os.chdir("..")
+    return
 
 
 try:
@@ -357,6 +359,9 @@ try:
 
         while getting_config == True:
 
+            #reload config
+            config_reload()
+
             #clear the screen again for a better user experience 
             os.system('cls||clear')
 
@@ -406,6 +411,7 @@ try:
         #and keep on asking the user until it is fully valid
         print(compress_level)
         print(Debug_level)
+        print(os.getcwd())
         
         print("(C)ompression, (D)ecompression or C(O)nfig")
         gettingOp = True
