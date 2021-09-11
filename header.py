@@ -69,13 +69,13 @@ class generalerror(Exception): #use this exception when something really unexpec
         #and yes i am aware we could check for spaces in the file name and replace them with "_" but i am too lazy to do that, 
         #also i would probably completely break this while doing that... Too bad!
 
-#class generalerror2(Exception):
- #   def __init__(self):
-  #      logging.critical("Something unexpected error")
-   #     ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
-    #    print("sorry someting went wrong on our side and the app cannot recover", '\n' "error code: 0")
-     #   time.sleep(5)
-      #  exit()
+class generalerror2(Exception):
+    def __init__(self):
+        logging.critical("Something unexpected error")
+        ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
+        print("sorry someting went wrong on our side and the app cannot recover", '\n' "error code: 0")
+        time.sleep(5)
+        exit()
 
 class invalidvalueerror(Exception):
     def __init__(self):
@@ -333,7 +333,7 @@ try:
 
     ############################
 
-    #does the handling of the language config selection
+    #does the handling of the Debug config selection
 
     def config_Debug():
         os.system('cls||clear')
@@ -373,7 +373,6 @@ try:
             print("---------{0} config---------\n\n".format(light_file_version))
             print("Available options:\n")
             print("Level -- Level of compression")
-            print("Debug -- enters debug mode")
             print("Exit -- Exits the configuration screen")
             print("\n")
 
@@ -383,8 +382,6 @@ try:
             
             if option == "level":
                 config_level()
-            if option == "Debug":
-                config_Debug()
             if option == "exit":
                 getting_config = False
                 os.system('cls||clear')
@@ -609,7 +606,4 @@ except KeyboardInterrupt:
     logging.critical('user pressed ctrl+C, application terminated')
     print("keybord interupt deteced!")
 except:
-    if Debug_level == True:
-        traceback.print_exc()
-    else:
-        raise generalerror2
+    raise generalerror2
