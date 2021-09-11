@@ -7,6 +7,7 @@ import zlib
 import getopt
 import logging
 from sys import exit
+import traceback
 
 #############################################################################
 #                                                                           #
@@ -33,14 +34,16 @@ from sys import exit
 ctypes.windll.kernel32.SetConsoleTitleW("LightFile") # window title
 
 #logging thing, idk how to describe it
-logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='myapp.log', format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO,)
+logging.basicConfig(filename='LFdebug.log', encoding='utf-8', level=logging.DEBUG)
+
 
 #main variables
-
+Debug_level = ""         # debug option used for debuging
 input_file_path = ""     # name and path of the input file
 output_file_path = ""    # name and path of the output file
 operation = 3            # the operation, be 0 to compress, 1 to decompress or 2 to configurate lightfile
-compress_level = 9       # the bigger the more compressed, at the expense of time to compress
+compress_level =  0      # the bigger the more compressed, at the expense of time to compress
 
 
 #file variables
@@ -74,17 +77,64 @@ class generalerror2(Exception):
         time.sleep(5)
         exit()
 
+class invalidvalueerror(Exception):
+    def __init__(self):
+        logging.critical("Something unexpected error")
+        ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :(")
+        print("an invalid value has been detected, check config files", '\n' "error code: NaN")
+        time.sleep(5)
+        exit()
+
+class missingconfig(Exception):
+    def __init__(self):
+        logging.warning("could not find the config files, using defult ones")
+        ctypes.windll.kernel32.SetConsoleTitleW("LightFile -- :O")
+        print("Sorry but we couldn't find the config files/folder, the app will continue using defult settings", '\n')
+        print("with the defult settings the compression level is 6 and debug options are disabled")
+        time.sleep(5)
+        pass
+        
 
 #other variables
 
-#sometimes i sit and wonder, what the hell is wrong with me
-light_file_version = "LightFile 1.0"
+light_file_version = "LightFile 1.1"
 
 #keywords to be detected in the getOp() function
 
 validConfigSelectors =        ["o", "config", "configuration"]
 validCompressionSelectors =   ["c", "compress", "compression"]
 validDecompressionSelectors = ["d", "decompress", "decompression"]
+
+#################
+
+#This loads up the config file
+try:
+    os.chdir("configs")
+    compress_level = open("level.cfg", 'r').read()
+    Debug_level = open("debug.cfg", 'r').read()
+    os.chdir("..")
+    
+except:
+    #oh it looks like we couldn't find these files, let's notify the user about it and continue with the defult
+    compress_level = 6
+    Debug_level = False
+    raise missingconfig
+
+# refresh the config function
+def config_reload():
+    global compress_level
+    global Debug_level
+    #os.chdir("..")
+    os.chdir("configs")
+   # compress_level.close()
+    #Debug_level.close()
+    compress_level = "0"
+    Debug_level = ""
+    compress_level = open("level.cfg", 'r').read()
+    Debug_level = open("debug.cfg", 'r').read()
+    os.chdir("..")
+    return
+
 
 try:
 
@@ -128,7 +178,6 @@ try:
         #-c and -d are the operation options for compression and decompression. it is nescessary and the program should not run without it.
 
         #set globals
-
         global input_file_path
         global output_file_path
         global operation
@@ -156,7 +205,6 @@ try:
                     print("-h is the help option. print out a help message and exit the program")
                     print("-L is the compression level option. not nescessary and will default to 6")
                     print("-c and -d are the operation options for compression and decompression. it is nescessary and the program should not run without it.") 
-                    #TODO add the help message, Done and Done!
                     exit()
                 if opt == "-L":
 
@@ -231,7 +279,7 @@ try:
             print(msg)
             exit()
 
-    #################
+    ###############################################
 
     #prints the standard config option header and asks the user for an input,
     #returning the user input
@@ -256,92 +304,51 @@ try:
     #########################
         
     #does the handling of the compression level config selection
-
     def config_level():
-
         global compress_level
+        os.system('cls||clear')
+        os.chdir("configs")
 
-        val = standardConfigFunction("Level", "0-9", compress_level, "The level of compression to be used. Higher values have better compression at the expensive of taking more time to compress\n0 is no compression and 9 is max compression")
-        
+        print("##########|Compress level|##########")
 
-        #check the values to see if it's empty or is an invalid value
+        print("Level 0-9, the current compression level is:", compress_level, " you can change this value for better compression. however higher values may take more time" )
+            
+        cfglevel = ""
+        new_compression_level = 0
+        new_compression_level = input(": ") 
+
+        if int(new_compression_level) <= 9:
+            cfglevel = open("level.cfg", 'w')    
+
+
+        if int(new_compression_level) > 9:
+            raise invalidvalueerror
+
+        cfglevel.write(new_compression_level)
+        cfglevel.close()            
         
-        if(val == ""):
-            return
-        else:
-            try:
-                val = int(val)
-                if val < 0 or val > 9:
-                    #the user put in an invalid value. simply return
-                    return
-                compress_level = int(val)
-            except ValueError:
-                #uh oh! the user probably put a letter here. let's not change the compress level
-                return
+        os.chdir("..")
+        return
+
 
     ############################
 
-    #does the handling of the language config selection
+    #does the handling of the Debug config selection
 
     def config_Debug():
-        global Debug_level
-        Debug_level = False
+        os.system('cls||clear')
+        os.chdir("configs")
 
-        val = standardConfigFunction("Level", "True-False", Debug_level, "if you enable this you will get a whole essay about a error\nTrue/False btw")
+        print("##########|Debug|##########")
+
+        print("options: true/false ,current value:", Debug_level, '\n' '\n'  "if set to true you will get debug messages")
         
-        print(val)
-        #check the values to see if it's empty or is an invalid value
-        time.sleep(5)
-
+        new_debug_level = input(": ")
+        cfgdebug = open("debug.cfg", 'w')
+        cfgdebug.write(new_debug_level)
         
-    ###############################################
-
-    #This function loads up the config file
-    #and the other saves to the config file.
-    #the config file is as follows:
-
-    #  LANGUAGE
-    #  COMPRESSION LEVEL
-
-    # everything is loaded and stored in the correct variables
-
-    def config_save():
-
-        #open the config file
-
-        
-        file_config = open(config_file_path, "w")
-
-        #write the variables to it
-        
-        file_config.write(str(compress_level) + "\n")
-
-        #save it
-        
-        file_config.close()
-
-    def config_load():
-        
-        #open the config file
-        try:
-            file_config = open(config_file_path, "r")
-        except FileNotFoundError:
-            #we didn't find a config file
-            #return and let it stay with the default config
-            logging.info('config file was not found! continuing with defult settings')
-            return
-
-
-        #read the file into the variables
-
-        language_file = file_config.readline().rstrip('\r\n')
-
-        compress_level = int(file_config.readline())
-
-        #then close the file
-        
-        file_config.close()
-
+        os.chdir("..")
+        return
 
     ###############################################
 
@@ -351,17 +358,21 @@ try:
         getting_config = True
 
         while getting_config == True:
-            #clear the screen again for a better user experience
-            
+
+            #reload config
+            config_reload()
+
+            #clear the screen again for a better user experience 
             os.system('cls||clear')
 
             #print the config options
+            print(os.getcwd())
+            print(compress_level)
+            print(Debug_level)
 
             print("---------{0} config---------\n\n".format(light_file_version))
             print("Available options:\n")
             print("Level -- Level of compression")
-            print("Language -- Language that ligthfile will use")
-            print("Debug -- enters debug mode")
             print("Exit -- Exits the configuration screen")
             print("\n")
 
@@ -369,18 +380,16 @@ try:
 
             #check for options and call the according functions
             
-            if option.lower() == "level":
+            if option == "level":
                 config_level()
-            if option.lower() == "Debug":
-                config_Debug()
-            if option.lower() == "exit":
+            if option == "exit":
                 getting_config = False
                 os.system('cls||clear')
+                return
 
 
             #write the changes to disk
 
-            config_save()
 
     ###################
 
@@ -397,6 +406,9 @@ try:
         #first off all get the operation
         #using the getOp() function to check if the user input is valid
         #and keep on asking the user until it is fully valid
+        print(compress_level)
+        print(Debug_level)
+        print(os.getcwd())
         
         print("(C)ompression, (D)ecompression or C(O)nfig")
         gettingOp = True
@@ -542,7 +554,7 @@ try:
     #then we are going to call the config load function to
     #load the appropriate variables.
 
-    config_load()
+    #config_load()
 
     #now that we loaded the config into the correct variables,
     #we will load the language lines from the appropriate file
@@ -579,7 +591,7 @@ try:
 
             #write the path
 
-            history_file.write(input_file_path)
+            history_file.write(input_file_path) 
             history_file.close()
             
             
@@ -591,7 +603,7 @@ try:
 
     print("Elapsed time: {0} seconds".format(round(time.time() - start_time, 2)))
 except KeyboardInterrupt:
-    logging.info('user pressed ctrl+C, not, epic, dude')
+    logging.critical('user pressed ctrl+C, application terminated')
     print("keybord interupt deteced!")
 except:
     raise generalerror2
