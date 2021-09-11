@@ -317,7 +317,7 @@ try:
         new_compression_level = 0
         new_compression_level = input(": ") 
 
-        if int(new_compression_level) < 9:
+        if int(new_compression_level) <= 9:
             cfglevel = open("level.cfg", 'w')    
 
 
