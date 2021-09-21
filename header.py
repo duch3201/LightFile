@@ -366,9 +366,9 @@ try:
             os.system('cls||clear')
 
             #print the config options
-            print(os.getcwd())
-            print(compress_level)
-            print(Debug_level)
+           # print(os.getcwd())
+           # print(compress_level)
+           # print(Debug_level)
 
             print("---------{0} config---------\n\n".format(light_file_version))
             print("Available options:\n")
@@ -406,9 +406,10 @@ try:
         #first off all get the operation
         #using the getOp() function to check if the user input is valid
         #and keep on asking the user until it is fully valid
-        print(compress_level)
-        print(Debug_level)
-        print(os.getcwd())
+        
+        #print(compress_level)
+        #print(Debug_level)
+        #print(os.getcwd())
         
         print("(C)ompression, (D)ecompression or C(O)nfig")
         gettingOp = True
