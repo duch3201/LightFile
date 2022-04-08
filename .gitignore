@@ -7,3 +7,5 @@ readme.md
 __pycache__/
 .github
 Configs/
+config/config.cfg
+config/config.cfg

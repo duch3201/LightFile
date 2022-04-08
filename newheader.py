@@ -31,19 +31,39 @@ global AllowedOptions
 global LowercaseAllowedOptions
 global CurrentOperation
 
+LFversion = 0
+IsDebugEnabled = False
+CompressionLevel = "9"
+bAskUsrForOutputFile = False
+
+def ConfigCrt(approotpath):
+    ConfigFile = open("config.cfg", 'w')
+    ConfigFile.write("Version: 0.1\n")
+    ConfigFile.write("debug: False\n")
+    ConfigFile.write("CompressionLevel: 9\n")
+    ConfigFile.write("AskUsrForOutputFile: False\n")
+    ConfigFile.write("RootPath: {}\n".format(approotpath))
+    ConfigFile.close()
+
 def loadconfig():
-    #try:
-    #print(os.getcwd())
-    if os.getcwd() == "config":
-    #os.chdir("config")
-        ConfigFile = open("config.cfg", 'r')
+    try:
+        approotpath = os.getcwd()
+        print(os.getcwd())
+        os.chdir("config")
+        try:
+            ConfigFile = open("config.cfg", 'r')
+        except FileNotFoundError:
+            print("Config file not found. Creating new config file.")
+            ConfigCrt(approotpath)
         ConfigFile = ConfigFile.readlines()
         LFversion = ConfigFile[0].replace("Version: ", "")
         IsDebugEnabled = ConfigFile[1].replace("debug: ", "")
         CompressionLevel = ConfigFile[2].replace("CompressionLevel: ", "")
         bAskUsrForOutputFile = ConfigFile[3].replace("AskUsrForOutputFile: ", "")
-    else:
-        os.chdir("config")
+    except:
+        print("Error loading config file")
+        exit()
+        
 
 
     #return
@@ -92,7 +112,7 @@ def main():
     try:
         #print(os.getcwd())
         loadconfig()
-        clear()
+        #clear()
         print("#######################|LightFile|############################")
         print("    Choose a option:                                          ")
         print("        C - compression                                       ")
