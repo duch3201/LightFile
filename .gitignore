@@ -9,3 +9,4 @@ __pycache__/
 Configs/
 config/config.cfg
 config/config.cfg
+test.py

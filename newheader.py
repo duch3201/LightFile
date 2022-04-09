@@ -13,6 +13,13 @@ from sys import exit
 import PIL
 from flask import Config
 
+try:
+    import cfgcrt
+except ImportError:
+    print("could not find create config file module!")
+    print("don't worry, the app can continue without it")
+    input("press anykey to continue")
+
 #############################################################################
 #                                                                           #
 #                                                                           #
@@ -36,34 +43,48 @@ IsDebugEnabled = False
 CompressionLevel = "9"
 bAskUsrForOutputFile = False
 
-def ConfigCrt(approotpath):
-    ConfigFile = open("config.cfg", 'w')
-    ConfigFile.write("Version: 0.1\n")
-    ConfigFile.write("debug: False\n")
-    ConfigFile.write("CompressionLevel: 9\n")
-    ConfigFile.write("AskUsrForOutputFile: False\n")
-    ConfigFile.write("RootPath: {}\n".format(approotpath))
-    ConfigFile.close()
+#def ConfigCrt(approotpath):
+ #   ConfigFile = open("config.cfg", 'w')
+  #  ConfigFile.write("Version: 0.1\n")
+   # ConfigFile.write("debug: False\n")
+    #ConfigFile.write("CompressionLevel: 9\n")
+    #ConfigFile.write("AskUsrForOutputFile: False\n")
+    #ConfigFile.write("RootPath: {}\n".format(approotpath))
+    #ConfigFile.close()
 
 def loadconfig():
+    approotpath = os.getcwd()
+    os.chdir(approotpath)
     try:
-        approotpath = os.getcwd()
-        print(os.getcwd())
+        #print(os.getcwd())
+        #print("1")
         os.chdir("config")
+        #print(os.getcwd())
+        #print("2")
         try:
             ConfigFile = open("config.cfg", 'r')
         except FileNotFoundError:
             print("Config file not found. Creating new config file.")
-            ConfigCrt(approotpath)
+            cfgcrt.ConfigCrt(approotpath)
+            input("Press anykey to continue")
+            loadconfig()
         ConfigFile = ConfigFile.readlines()
         LFversion = ConfigFile[0].replace("Version: ", "")
+        print(LFversion)
+        input("")
         IsDebugEnabled = ConfigFile[1].replace("debug: ", "")
+        #print(IsDebugEnabled)
+        #input("")
         CompressionLevel = ConfigFile[2].replace("CompressionLevel: ", "")
+        #print(CompressionLevel)
+        #input("")
         bAskUsrForOutputFile = ConfigFile[3].replace("AskUsrForOutputFile: ", "")
+        #print(bAskUsrForOutputFile)
+        #input("")
     except:
-        print("Error loading config file")
-        exit()
-        
+        #print("Error loading config file")
+        #exit()
+        pass
 
 
     #return
@@ -71,14 +92,17 @@ def loadconfig():
        # print("Error loading config file")
        #exit()
 
-def debug(LFversion, IsDebugEnabled, CompressionLevel, bAskUsrForOutputFile, AllowedOptions, LowercaseAllowedOptions):
-    print(LFversion)
-    print(IsDebugEnabled)
-    print(CompressionLevel)
-    print(bAskUsrForOutputFile)
-    print(AllowedOptions)
-    print(LowercaseAllowedOptions)
-    main()
+def debug(LFversion, IsDebugEnabled, CompressionLevel, bAskUsrForOutputFile, AllowedOptions):
+    clear()
+    print("all used variables:")
+    print("LFversion: ", LFversion)
+    print("IsDebugEnabled: ", IsDebugEnabled)
+    print("CompressionLevel", CompressionLevel)
+    print("bAskUserForOutputFile: ", bAskUsrForOutputFile)
+    print("AllowedOptions: ", AllowedOptions)
+    #print(LowercaseAllowedOptions)
+    input("Press anykey to continue")
+    main(LFversion)
     
 
 
@@ -89,6 +113,7 @@ def clear():
     else:
         command = 'clear'
         os.system(command)
+
 
 def GatherInfo(bAskUsrForOutputFile, CurrentOperation):
     clear()
@@ -108,12 +133,12 @@ def Dcompr(InputFile, compr_level):
 
 
 
-def main():
+def main(LFversion):
     try:
         #print(os.getcwd())
         loadconfig()
         #clear()
-        print("#######################|LightFile|############################")
+        print("#######################|LightFile ver: {}|############################".format(LFversion))
         print("    Choose a option:                                          ")
         print("        C - compression                                       ")
         print("        D - decompression                                     ")
@@ -134,17 +159,23 @@ def main():
             elif option == "Q" or option == "q":
                 exit()
             elif option == "DEBUG":
-                debug(LFversion, IsDebugEnabled, CompressionLevel, bAskUsrForOutputFile, AllowedOptions, LowercaseAllowedOptions)
+                if IsDebugEnabled == True:
+                    debug(LFversion, IsDebugEnabled, CompressionLevel, bAskUsrForOutputFile, AllowedOptions)
+                else:
+                    print("Debug is not enabled")
+                    input("Press anykey to continue")
+                    main(LFversion)
         if option not in AllowedOptions:
             clear()
             print("Invalid option. Try again.")
-            main()
+            input("Press anykey to continue")
+            main(LFversion)
     except KeyboardInterrupt:
         clear()
         print("keyboard interrupt")
         exit()
 
-main()
+main(LFversion)
 
 
 
